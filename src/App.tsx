@@ -1,5 +1,5 @@
-import Login from "./component/loign";
-import CreateAccount from "./component/createAccount";
+import Login from "./components/Login";
+import CreateAccount from "./components/CreateAccount";
 
 const App = () => {
   return (
