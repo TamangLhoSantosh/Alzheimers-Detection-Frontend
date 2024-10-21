@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 
-const createAccount = () => {
-  // State to store the form values
+const CreateAccount = () => {
   const [values, setValues] = useState({
     firstname: "",
     middlename: "",
@@ -25,143 +25,127 @@ const createAccount = () => {
   };
 
   return (
-    <>
-      <div className="flex justify-center">
-        <div className="w-4/5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-10">
-            <form onSubmit={handleSubmit} className="my-auto">
-              <p className="text-3xl font-bold">Sign Up</p>
-              <br />
-              <div className="w-full">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* First Name */}
-                  <div>
-                    <p className="text-base my-2">First Name</p>
-                    <input
-                      type="text"
-                      name="firstname"
-                      placeholder="Enter your First Name"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* Middle Name */}
-                  <div>
-                    <p className="text-base my-2">Middle Name</p>
-                    <input
-                      type="text"
-                      name="middlename"
-                      placeholder="Enter your Middle Name"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  {/* Last Name */}
-                  <div>
-                    <p className="text-base my-2">Last Name</p>
-                    <input
-                      type="text"
-                      name="lastname"
-                      placeholder="Enter your Last Name"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* DOB */}
-                  <div>
-                    <p className="text-base my-2">DOB</p>
-                    <input
-                      type="date"
-                      name="dob"
-                      placeholder="Enter your Date of Birth"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* Gender */}
-                  <div>
-                    <p className="text-base my-2">Gender</p>
-                    <select
-                      name="gender"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      defaultValue=""
-                      required
-                    >
-                      <option value="" disabled>
-                        Select your Gender
-                      </option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  {/* Contact No */}
-                  <div>
-                    <p className="text-base my-2">Contact Number</p>
-                    <input
-                      type="text"
-                      name="contact"
-                      placeholder="Enter your Contact No"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* Address */}
-                  <div>
-                    <p className="text-base my-2">Address</p>
-                    <input
-                      type="text"
-                      name="address"
-                      placeholder="Enter your Address"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* Email */}
-                  <div>
-                    <p className="text-base my-2">Email</p>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter your Email"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* Password */}
-                  <div>
-                    <p className="text-base my-2">Password</p>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Enter Password"
-                      className="border rounded-md p-1 w-full"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-              <br />
-              <button
-                type="submit"
-                className="border rounded-lg py-2 px-16 md:px-24 bg-black text-white"
-              >
-                Submit
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </>
+    <Box display="flex" justifyContent="center" mt={5}>
+      <Box width="30%">
+        <Box component="form" onSubmit={handleSubmit} display="grid" gap={2}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            Sign Up
+          </Typography>
+
+          {/* All fields will be in one column now */}
+          <Box
+            display="grid"
+            gap={2}
+            gridTemplateColumns="1fr"
+            justifyContent="center"
+          >
+            {/* First Name */}
+            <TextField
+              label="First Name"
+              name="firstname"
+              placeholder="Enter your First Name"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* Middle Name */}
+            <TextField
+              label="Middle Name"
+              name="middlename"
+              placeholder="Enter your Middle Name"
+              fullWidth
+              onChange={handleChange}
+            />
+            {/* Last Name */}
+            <TextField
+              label="Last Name"
+              name="lastname"
+              placeholder="Enter your Last Name"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* DOB */}
+            <TextField
+              label="DOB"
+              name="dob"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* Gender */}
+            <TextField
+              label="Gender"
+              name="gender"
+              select
+              fullWidth
+              value={values.gender}
+              onChange={handleChange}
+              required
+            >
+              <MenuItem value="" disabled>
+                Select your Gender
+              </MenuItem>
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </TextField>
+            {/* Contact No */}
+            <TextField
+              label="Contact Number"
+              name="contact"
+              placeholder="Enter your Contact No"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* Address */}
+            <TextField
+              label="Address"
+              name="address"
+              placeholder="Enter your Address"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* Email */}
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Enter your Email"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+            {/* Password */}
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter Password"
+              fullWidth
+              onChange={handleChange}
+              required
+            />
+          </Box>
+
+          <Box mt={4}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default createAccount;
+export default CreateAccount;

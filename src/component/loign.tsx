@@ -1,6 +1,15 @@
 import { useState } from "react";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-const loign = () => {
+const Login = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -10,6 +19,8 @@ const loign = () => {
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
@@ -32,74 +43,85 @@ const loign = () => {
     setErrors({ ...errors, [name]: error });
   };
 
-  // Validation function
-  const validation = () => {
-    if (errors.email !== "" || errors.password !== "") {
-      console.log(errors);
-      return false;
-    }
-
-    if (values.email === "" || values.password === "") {
-      console.log(values);
-      return false;
-    }
-    return true;
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev); // Toggle password visibility
   };
 
-  // Function to handle login
-  const handleLogin = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (!validation()) return;
-    console.log("loign");
+    console.log(values);
+    console.log("Login Submitted");
   };
 
   return (
-    <div>
-      <div className="flex justify-center h-[510px]">
-        <div className="w-4/5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
-            <form onSubmit={handleLogin} className="my-8">
-              <p className="text-4xl font-bold">Login</p>
-              <br />
-              {/* Email and Password Fields */}
-              <div className="w-11/12">
-                {/* email */}
-                <p className="text-base my-3">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={values.email}
-                  className="border rounded-md p-1 w-full"
-                  onChange={handleChange}
-                  required
-                />
-                {/* password */}
-                <p className="text-base my-3">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  value={values.password}
-                  placeholder="Enter your password"
-                  className="border rounded-md p-1 w-full"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <br />
-              {/* Login Button */}
-              <button
-                type="submit"
-                className="my-4 md:mx-4 border rounded-lg py-2 px-16 md:px-24 bg-black text-white"
-              >
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="510px"
+    >
+      <Box
+        width="30%"
+        display="flex"
+        justifyContent="center"
+        flexDirection="column"
+      >
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
+          Login
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} mt={3}>
+          {/* Email Field */}
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            fullWidth
+            error={Boolean(errors.email)}
+            helperText={errors.email}
+            onChange={handleChange}
+            required
+            sx={{ mb: 3 }}
+          />
+          {/* Password Field with Toggle */}
+          <TextField
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            fullWidth
+            error={Boolean(errors.password)}
+            helperText={errors.password}
+            onChange={handleChange}
+            required
+            sx={{ mb: 3 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {/* Login Button */}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Login
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default loign;
+export default Login;
