@@ -1,19 +1,9 @@
-import Login from "./components/Login";
-import CreateAccount from "./components/CreateAccount";
-import MessageComponent from "./components/MessageComponent";
+import Login from "./components/user/Login";
 
 const App = () => {
   return (
     <>
-      {/* <Login /> */}
-      {/* <CreateAccount /> */}
-      <MessageComponent
-        title={"Sdfs"}
-        message={"sadfsa"}
-        onClose={() => {
-          console.log(new Date());
-        }}
-      />
+      <Login />
     </>
   );
 };
