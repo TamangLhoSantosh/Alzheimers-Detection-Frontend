@@ -8,6 +8,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import apis from "../../config/apis";
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -47,10 +48,24 @@ const Login = () => {
     setShowPassword((prev) => !prev); // Toggle password visibility
   };
 
+  const validation = () => {
+    if (errors.email === "" && errors.password === "") return true;
+    return false;
+  };
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(values);
-    console.log("Login Submitted");
+    if (validation()) {
+      try {
+        const response = await apis.login(values);
+        console.log(response);
+      } catch (e: any) {
+        // Handle error
+        if (e.response) {
+          console.log(e.response);
+        }
+      }
+    }
   };
 
   return (
