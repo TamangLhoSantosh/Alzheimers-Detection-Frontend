@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 
 const CreateAccount = () => {
+  // Initializing state to store user input for account creation
   const [values, setValues] = useState({
     firstname: "",
     middlename: "",
@@ -14,10 +15,12 @@ const CreateAccount = () => {
     password: "",
   });
 
+  // Handler to update the state whenever the input fields are changed
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
+  // Handler for form submission that prevents default action and logs the form values
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(values);
@@ -25,21 +28,25 @@ const CreateAccount = () => {
   };
 
   return (
+    // Wrapping the form in a centered Box with margin from the top
     <Box display="flex" justifyContent="center" mt={5}>
+      {/* A container Box to limit the width of the form */}
       <Box width="30%">
+        {/* Form element with grid layout and onSubmit event */}
         <Box component="form" onSubmit={handleSubmit} display="grid" gap={2}>
+          {/* Form header */}
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Sign Up
           </Typography>
 
-          {/* All fields will be in one column now */}
+          {/* Layout for the form inputs with a single-column grid */}
           <Box
             display="grid"
             gap={2}
             gridTemplateColumns="1fr"
             justifyContent="center"
           >
-            {/* First Name */}
+            {/* First Name field */}
             <TextField
               label="First Name"
               name="firstname"
@@ -48,7 +55,7 @@ const CreateAccount = () => {
               onChange={handleChange}
               required
             />
-            {/* Middle Name */}
+            {/* Middle Name field */}
             <TextField
               label="Middle Name"
               name="middlename"
@@ -56,7 +63,7 @@ const CreateAccount = () => {
               fullWidth
               onChange={handleChange}
             />
-            {/* Last Name */}
+            {/* Last Name field */}
             <TextField
               label="Last Name"
               name="lastname"
@@ -65,17 +72,17 @@ const CreateAccount = () => {
               onChange={handleChange}
               required
             />
-            {/* DOB */}
+            {/* Date of Birth (DOB) field */}
             <TextField
               label="DOB"
               name="dob"
               type="date"
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true }} // Ensures the label is positioned correctly for date input
               fullWidth
               onChange={handleChange}
               required
             />
-            {/* Gender */}
+            {/* Gender selection field */}
             <TextField
               label="Gender"
               name="gender"
@@ -92,7 +99,7 @@ const CreateAccount = () => {
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="other">Other</MenuItem>
             </TextField>
-            {/* Contact No */}
+            {/* Contact Number field */}
             <TextField
               label="Contact Number"
               name="contact"
@@ -101,7 +108,7 @@ const CreateAccount = () => {
               onChange={handleChange}
               required
             />
-            {/* Address */}
+            {/* Address field */}
             <TextField
               label="Address"
               name="address"
@@ -110,7 +117,7 @@ const CreateAccount = () => {
               onChange={handleChange}
               required
             />
-            {/* Email */}
+            {/* Email field */}
             <TextField
               label="Email"
               name="email"
@@ -120,7 +127,7 @@ const CreateAccount = () => {
               onChange={handleChange}
               required
             />
-            {/* Password */}
+            {/* Password field */}
             <TextField
               label="Password"
               name="password"
@@ -132,6 +139,7 @@ const CreateAccount = () => {
             />
           </Box>
 
+          {/* Submit button */}
           <Box mt={4}>
             <Button
               type="submit"
