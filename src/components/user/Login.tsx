@@ -22,7 +22,6 @@ const Login = () => {
   // Handle input change
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
-
     setValues({ ...values, [name]: value });
   };
 

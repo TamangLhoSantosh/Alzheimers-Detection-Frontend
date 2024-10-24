@@ -1,11 +1,9 @@
-import CreateAccount from "./components/admin/CreateAccount";
-import Login from "./components/user/Login";
+import AppRoutes from "./routes";
 
 const App = () => {
   return (
     <>
-      {/* <Login /> */}
-      <CreateAccount />
+      <AppRoutes />
     </>
   );
 };
