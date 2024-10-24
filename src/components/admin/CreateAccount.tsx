@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
+import apis from "../../config/apis";
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -20,8 +21,28 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(values);
-    console.log("Account Created");
+    try {
+      const response = await apis.createUserAccount({
+        username: values.email,
+        first_name: values.firstname,
+        middle_name: values.middlename,
+        last_name: values.lastname,
+        dob: values.dob,
+        gender: values.gender,
+        contact: values.contact,
+        address: values.address,
+        email: values.email,
+        is_admin: false,
+        is_hospital_admin: false,
+        password: values.password,
+      });
+      console.log(response);
+    } catch (e: any) {
+      // Handle error
+      if (e.response) {
+        console.log(e.response);
+      }
+    }
   };
 
   return (
