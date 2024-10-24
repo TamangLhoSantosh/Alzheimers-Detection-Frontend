@@ -16,54 +16,34 @@ const Login = () => {
     password: "",
   });
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  // State for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
-
+  // Handle input change
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
-    let error = "";
-
-    // Email regex pattern for specific domain
-    const emailPattern = /^[^\s@]+/;
-    // Password regex pattern (at least 8 characters)
-    const passwordPattern = /^.{8,}$/;
-
-    if (name === "email" && !emailPattern.test(value)) {
-      error = "Email must be in the format: example@patancollege.edu.np.";
-    }
-
-    if (name === "password" && !passwordPattern.test(value)) {
-      error = "Password must be at least 8 characters long.";
-    }
 
     setValues({ ...values, [name]: value });
-    setErrors({ ...errors, [name]: error });
   };
 
+  // Toggle password visibility
   const handleClickShowPassword = () => {
-    setShowPassword((prev) => !prev); // Toggle password visibility
-  };
-
-  const validation = () => {
-    if (errors.email === "" && errors.password === "") return true;
-    return false;
+    setShowPassword((prev) => !prev);
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (validation()) {
-      try {
-        const response = await apis.login(values);
-        console.log(response);
-      } catch (e: any) {
-        // Handle error
-        if (e.response) {
-          console.log(e.response);
-        }
+    try {
+      const response = await apis.login({
+        username: values.email,
+        password: values.password,
+      });
+
+      console.log(response);
+    } catch (e: any) {
+      // Handle error
+      if (e.response) {
+        console.log(e.response);
       }
     }
   };
@@ -92,8 +72,6 @@ const Login = () => {
             type="email"
             placeholder="Enter your email"
             fullWidth
-            error={Boolean(errors.email)}
-            helperText={errors.email}
             onChange={handleChange}
             required
             sx={{ mb: 3 }}
@@ -105,8 +83,6 @@ const Login = () => {
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
             fullWidth
-            error={Boolean(errors.password)}
-            helperText={errors.password}
             onChange={handleChange}
             required
             sx={{ mb: 3 }}
