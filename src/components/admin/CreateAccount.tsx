@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 import apis from "../../services/apis";
+import MessageComponent from "../generic/MessageComponent";
+import { CheckBox } from "@mui/icons-material";
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -17,6 +19,16 @@ const CreateAccount = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  const onclose = () => {
+    setMessage("");
+    setTitle("");
+    setShowMessage(false);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -36,11 +48,17 @@ const CreateAccount = () => {
         is_hospital_admin: false,
         password: values.password,
       });
-      console.log(response);
+      if (response.status === 200) {
+        setShowMessage(true);
+        setTitle("Success");
+        setMessage(response.data.message);
+      }
     } catch (e: any) {
       // Handle error
       if (e.response) {
-        console.log(e.response);
+        setShowMessage(true);
+        setTitle("Error");
+        setMessage(e.response.data.detail);
       }
     }
   };
@@ -152,7 +170,6 @@ const CreateAccount = () => {
               required
             />
           </Box>
-
           <Box mt={4}>
             <Button
               type="submit"
@@ -165,6 +182,9 @@ const CreateAccount = () => {
           </Box>
         </Box>
       </Box>
+      {showMessage && (
+        <MessageComponent message={message} title={title} onClose={onclose} />
+      )}
     </Box>
   );
 };

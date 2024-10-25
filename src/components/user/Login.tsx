@@ -62,7 +62,7 @@ const Login = () => {
       if (e.response) {
         setShowMessage(true);
         setTitle("Error");
-        setMessage(e.response.data.message);
+        setMessage(e.response.data.detail);
       }
     }
   };
