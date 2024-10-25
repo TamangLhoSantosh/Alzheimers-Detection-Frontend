@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const NavbarComponent = () => {
   return (
@@ -21,9 +22,21 @@ const NavbarComponent = () => {
         justifyContent="space-evenly"
         gap="30px"
       >
-        <Typography>Hospitals</Typography>
-        <Typography>Users</Typography>
-        <Typography>Patients</Typography>
+        <Link
+          to="/hospitals"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Typography>Hospitals</Typography>
+        </Link>
+        <Link to="/users" style={{ textDecoration: "none", color: "inherit" }}>
+          <Typography>Users</Typography>
+        </Link>
+        <Link
+          to="/patients"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Typography>Patients</Typography>
+        </Link>
       </Box>
     </Box>
   );
