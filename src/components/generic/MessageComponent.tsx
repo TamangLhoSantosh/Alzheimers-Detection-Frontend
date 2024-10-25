@@ -16,7 +16,7 @@ const MessageComponent = ({ onClose, message, title }: Props) => {
       top={0}
       justifyContent={"center"}
       alignItems={"center"}
-      bgcolor={"black"}
+      bgcolor={"rgba(0,0,0,0.5)"}
       zIndex={"50"}
     >
       <Box
@@ -28,10 +28,15 @@ const MessageComponent = ({ onClose, message, title }: Props) => {
         boxShadow={20}
       >
         <Box textAlign={"center"}>
-          <Typography fontWeight="bold" gutterBottom>
+          <Typography fontWeight="bold" fontSize="30px" gutterBottom>
             {title}
           </Typography>
-          <Typography fontWeight="bold" gutterBottom>
+          <Typography
+            fontWeight="bold"
+            fontSize="20px"
+            marginBottom={"20px"}
+            gutterBottom
+          >
             {message}
           </Typography>
           <Button

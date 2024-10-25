@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
-import apis from "../../config/apis";
+import apis from "../../services/apis";
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -15,11 +15,11 @@ const CreateAccount = () => {
     password: "",
   });
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await apis.createUserAccount({
