@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   TextField,
   Button,
@@ -8,7 +8,8 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import apis from "../../config/apis";
+import apis from "../../services/apis";
+import MessageComponent from "../generic/MessageComponent";
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -20,7 +21,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // Handle input change
-  const handleChange = (e: { target: { name: any; value: any } }) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
@@ -30,7 +31,17 @@ const Login = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  const onclose = () => {
+    setMessage("");
+    setTitle("");
+    setShowMessage(false);
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await apis.login({
@@ -38,11 +49,20 @@ const Login = () => {
         password: values.password,
       });
 
-      console.log(response);
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.access_token);
+        localStorage.setItem("refresh", response.data.refresh_token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        setShowMessage(true);
+        setTitle("Success");
+        setMessage(response.data.message);
+      }
     } catch (e: any) {
       // Handle error
       if (e.response) {
-        console.log(e.response);
+        setShowMessage(true);
+        setTitle("Error");
+        setMessage(e.response.data.detail);
       }
     }
   };
@@ -110,6 +130,9 @@ const Login = () => {
           </Button>
         </Box>
       </Box>
+      {showMessage && (
+        <MessageComponent message={message} title={title} onClose={onclose} />
+      )}
     </Box>
   );
 };
