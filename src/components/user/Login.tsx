@@ -41,29 +41,47 @@ const Login = () => {
     setShowMessage(false);
   };
 
+  // Validate thr form data
+  const validate = () => {
+    if (values.email === "" || values.password === "") return false;
+    return true;
+  };
+
+  // Handle the form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await apis.login({
-        username: values.email,
-        password: values.password,
-      });
+    if (validate()) {
+      try {
+        const response = await apis.login({
+          username: values.email,
+          password: values.password,
+        });
 
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.access_token);
-        localStorage.setItem("refresh", response.data.refresh_token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
+        if (response.status === 200) {
+          localStorage.setItem("token", response.data.access_token);
+          localStorage.setItem("refresh", response.data.refresh_token);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          localStorage.setItem("is_admin", response.data.is_admin);
+          localStorage.setItem(
+            "is_hospital_admin",
+            response.data.is_hospital_admin
+          );
+          setShowMessage(true);
+          setTitle("Success");
+          setMessage(response.data.message);
+        }
+      } catch (e: any) {
+        // Handle error
+        if (e.response) {
+          setShowMessage(true);
+          setTitle("Error");
+          setMessage(e.response.data.detail);
+        }
       }
-    } catch (e: any) {
-      // Handle error
-      if (e.response) {
-        setShowMessage(true);
-        setTitle("Error");
-        setMessage(e.response.data.detail);
-      }
+    } else {
+      setShowMessage(true);
+      setTitle("Empty Fields");
+      setMessage("Please Enter All Values");
     }
   };
 

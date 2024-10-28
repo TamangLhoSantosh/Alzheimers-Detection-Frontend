@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
-import { CheckBox } from "@mui/icons-material";
 
 const CreateAccount = () => {
   const [values, setValues] = useState({

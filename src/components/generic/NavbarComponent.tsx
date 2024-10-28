@@ -13,7 +13,9 @@ const NavbarComponent = () => {
       zIndex="99"
     >
       <Box gridColumn="1" p="20px">
-        Logo
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          Logo
+        </Link>
       </Box>
       <Box
         gridColumn="2"
