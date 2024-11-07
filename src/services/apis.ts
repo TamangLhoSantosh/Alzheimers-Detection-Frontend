@@ -12,6 +12,14 @@ const apis = {
   createUserAccount(accountData: any) {
     return axiosClient.post("/user", accountData);
   },
+
+  createHospital(hospitalData: any) {
+    return axiosClient.post("/hospital", hospitalData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
 };
 
 export default apis;

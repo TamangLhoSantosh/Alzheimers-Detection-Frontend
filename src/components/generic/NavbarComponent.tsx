@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 const NavbarComponent = () => {
   return (
     <Box
-      position="fixed"
+      position="sticky"
       top="0"
       display="grid"
       justifyContent="space-between"
       alignItems="center"
       width="100%"
       zIndex="99"
+      bgcolor="white"
     >
       <Box gridColumn="1" p="20px">
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
