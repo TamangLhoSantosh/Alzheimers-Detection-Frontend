@@ -29,24 +29,41 @@ const CreateHospital = () => {
           display: "flex",
           flexDirection: "column",
           gap: 3,
-          mt: 4,
+          mt: 6,
           p: 4,
-          borderRadius: 2,
-          boxShadow: 3,
-          bgcolor: "background.paper",
+          borderRadius: 3,
+          boxShadow: 4,
+          bgcolor: "#B0D9FF", // Pastel Blue background
+          transition: "all 0.3s ease-in-out",
         }}
       >
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          align="center"
+          gutterBottom
+          sx={{ color: "#7241ff" }}
+        >
           Create Hospital
         </Typography>
 
         <TextField
-          label="Name"
+          label="Hospital Name"
           name="name"
           value={formData.name}
           onChange={handleChange}
           fullWidth
           required
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            "& .MuiInputBase-root": {
+              borderRadius: "8px",
+            },
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#03B0FD",
+            },
+          }}
         />
         <TextField
           label="Address"
@@ -55,6 +72,16 @@ const CreateHospital = () => {
           onChange={handleChange}
           fullWidth
           required
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            "& .MuiInputBase-root": {
+              borderRadius: "8px",
+            },
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#03B0FD",
+            },
+          }}
         />
         <TextField
           label="Contact"
@@ -63,6 +90,16 @@ const CreateHospital = () => {
           onChange={handleChange}
           fullWidth
           required
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            "& .MuiInputBase-root": {
+              borderRadius: "8px",
+            },
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#03B0FD",
+            },
+          }}
         />
         <TextField
           label="Email"
@@ -71,9 +108,35 @@ const CreateHospital = () => {
           onChange={handleChange}
           fullWidth
           required
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            "& .MuiInputBase-root": {
+              borderRadius: "8px",
+            },
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#03B0FD",
+            },
+          }}
         />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{
+            padding: "12px 20px",
+            fontWeight: "bold",
+            fontSize: "16px",
+            borderRadius: "8px",
+            backgroundColor: "#03B0FD",
+            "&:hover": {
+              backgroundColor: "#02FBFF",
+            },
+            transition: "background-color 0.3s ease-in-out",
+          }}
+        >
           Create
         </Button>
       </Box>

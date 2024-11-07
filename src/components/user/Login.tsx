@@ -41,7 +41,7 @@ const Login = () => {
     setShowMessage(false);
   };
 
-  // Validate thr form data
+  // Validate form data
   const validate = () => {
     if (values.email === "" || values.password === "") return false;
     return true;
@@ -90,15 +90,23 @@ const Login = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height="510px"
+      height="100vh"
+      sx={{
+        background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
+        padding: "20px",
+      }}
     >
       <Box
         width="30%"
         display="flex"
         justifyContent="center"
         flexDirection="column"
+        bgcolor="white"
+        p="20px"
+        borderRadius="8px"
+        boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
       >
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
+        <Typography variant="h4" fontWeight="bold" gutterBottom color="#7241ff">
           Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} mt={3}>
@@ -111,7 +119,17 @@ const Login = () => {
             fullWidth
             onChange={handleChange}
             required
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#03B0FD",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7241ff",
+                },
+              },
+            }}
           />
           {/* Password Field with Toggle */}
           <TextField
@@ -122,7 +140,17 @@ const Login = () => {
             fullWidth
             onChange={handleChange}
             required
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#03B0FD",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7241ff",
+                },
+              },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -143,6 +171,12 @@ const Login = () => {
             variant="contained"
             color="primary"
             size="large"
+            sx={{
+              bgcolor: "#7241ff",
+              "&:hover": {
+                bgcolor: "#03B0FD",
+              },
+            }}
           >
             Login
           </Button>
