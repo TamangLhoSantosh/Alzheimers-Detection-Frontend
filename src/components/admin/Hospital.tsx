@@ -55,6 +55,7 @@ const Hospital = () => {
         setShowMessage(true);
         setTitle("Success");
         setMessage(response.data.message);
+        fetchHospitalData();
       }
     } catch (e: any) {
       // Handle error
@@ -67,17 +68,16 @@ const Hospital = () => {
   };
 
   return (
-    <Box>
-      <Box display="flex" flexDirection="column" alignItems="flex-start" p={3}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          gutterBottom
-          style={{ color: "#03B0FD" }}
-        >
-          Hospital Information
-        </Typography>
-
+    <Box display="flex" flexDirection="column" alignItems="center" p={3}>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        p={10}
+        style={{ color: "#03B0FD" }}
+      >
+        Hospital Information
+      </Typography>
+      <Box display="grid" gridRow={4}>
         {/* Displaying multiple hospitals */}
         {hospitalData.length === 0 ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
@@ -111,10 +111,13 @@ const Hospital = () => {
             </Box>
           ))
         )}
+      </Box>
+      <Box display="flex" justifyContent="center" gap={10}>
         {/* Refresh Button */}
         <Button
           variant="contained"
           color="primary"
+          onClick={fetchHospitalData}
           style={{
             backgroundColor: "#7241FF",
             color: "#fff",
@@ -142,23 +145,23 @@ const Hospital = () => {
           Add Hospital
         </Button>
 
-        {/* Conditionally Render Create Hospital Form */}
+        {/* Create Hospital Form */}
         {showForm && (
           <CreateHospital
             onAddHospital={addHospital}
             onClose={() => setShowForm(false)}
           />
         )}
-      </Box>
 
-      {/* Display Message Component */}
-      {showMessage && (
-        <MessageComponent
-          title={title}
-          message={message}
-          onClose={closeMessage}
-        />
-      )}
+        {/* Display Message Component */}
+        {showMessage && (
+          <MessageComponent
+            title={title}
+            message={message}
+            onClose={closeMessage}
+          />
+        )}
+      </Box>
     </Box>
   );
 };
