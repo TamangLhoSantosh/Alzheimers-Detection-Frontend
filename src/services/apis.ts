@@ -28,6 +28,14 @@ const apis = {
       },
     });
   },
+
+  updateHospital(id: string, hospitalData: any) {
+    return axiosClient.put(`/hospital/${id}`, hospitalData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
 };
 
 export default apis;

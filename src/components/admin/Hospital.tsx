@@ -4,7 +4,9 @@ import CreateHospital from "./CreateHospital";
 import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
 
+// Interface for hospital data
 interface HospitalData {
+  id: string;
   name: string;
   email: string;
   contact: string;
@@ -14,10 +16,13 @@ interface HospitalData {
 const Hospital = () => {
   const [hospitalData, setHospitalData] = useState<HospitalData[]>([]);
   const [showForm, setShowForm] = useState(false);
-
+  const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
+    null
+  );
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Function to close message
   const closeMessage = () => {
@@ -26,18 +31,25 @@ const Hospital = () => {
     setShowMessage(false);
   };
 
+  // Function to handle API errors
+  const handleApiError = (e: any) => {
+    const errorMessage =
+      e.response?.data?.detail || "An unexpected error occurred.";
+    setShowMessage(true);
+    setTitle("Error");
+    setMessage(errorMessage);
+  };
+
   // Function to fetch hospital data
   const fetchHospitalData = async () => {
+    setLoading(true);
     try {
       const response = await apis.getHospitalData();
       if (response.status === 200) setHospitalData(response.data);
     } catch (e: any) {
-      // Handle error
-      if (e.response) {
-        setShowMessage(true);
-        setTitle("Error");
-        setMessage(e.response.data.detail);
-      }
+      handleApiError(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,24 +59,43 @@ const Hospital = () => {
   }, []);
 
   // Function to handle new hospital addition
-  const addHospital = async (newHospital: HospitalData) => {
+  const addHospital = async (newHospital: any) => {
     try {
       const response = await apis.createHospital(newHospital);
       if (response.status === 200) {
-        console.log(response);
         setShowMessage(true);
         setTitle("Success");
         setMessage(response.data.message);
         fetchHospitalData();
+        setShowForm(false);
       }
     } catch (e: any) {
-      // Handle error
-      if (e.response) {
-        setShowMessage(true);
-        setTitle("Error");
-        setMessage(e.response.data.detail);
-      }
+      handleApiError(e);
     }
+  };
+
+  // Function to handle hospital update
+  const updateHospital = async (updatedHospital: any) => {
+    try {
+      const response = await apis.updateHospital(
+        updatedHospital.id,
+        updatedHospital
+      );
+      if (response.status === 202) {
+        setShowMessage(true);
+        setTitle("Success");
+        setMessage(response.data.message);
+        fetchHospitalData();
+        setShowForm(false);
+      }
+    } catch (e: any) {
+      handleApiError(e);
+    }
+  };
+
+  const handleEdit = (hospital: HospitalData) => {
+    setCurrentHospital(hospital);
+    setShowForm(true);
   };
 
   return (
@@ -79,9 +110,14 @@ const Hospital = () => {
       </Typography>
       <Box display="grid" gridRow={4}>
         {/* Displaying multiple hospitals */}
-        {hospitalData.length === 0 ? (
+
+        {loading ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             Loading hospital data...
+          </Typography>
+        ) : hospitalData.length === 0 ? (
+          <Typography variant="body1" style={{ color: "#B0D9FF" }}>
+            No hospitals found
           </Typography>
         ) : (
           hospitalData.map((hospital, index) => (
@@ -108,6 +144,14 @@ const Hospital = () => {
               <Typography variant="body1" style={{ color: "#7241FF" }}>
                 Address: {hospital.address}
               </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => handleEdit(hospital)}
+                sx={{ mt: 2 }}
+              >
+                Edit
+              </Button>
             </Box>
           ))
         )}
@@ -148,8 +192,9 @@ const Hospital = () => {
         {/* Create Hospital Form */}
         {showForm && (
           <CreateHospital
-            onAddHospital={addHospital}
+            onAddHospital={currentHospital ? updateHospital : addHospital}
             onClose={() => setShowForm(false)}
+            hospitalData={currentHospital}
           />
         )}
 

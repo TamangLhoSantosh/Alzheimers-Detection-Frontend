@@ -1,32 +1,47 @@
-import { useState } from "react";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
 
-// Interface for hospital data
-interface HospitalData {
+// Interface for adding a new hospital (no id)
+interface NewHospitalData {
   name: string;
   email: string;
   contact: string;
   address: string;
 }
 
-// Props interface
+// Interface for updating an existing hospital (with id)
+interface UpdateHospitalData extends NewHospitalData {
+  id: string;
+}
+
+// Props Interface
 interface CreateHospitalProps {
-  onAddHospital: (newHospital: HospitalData) => void;
+  onAddHospital: (newHospital: NewHospitalData) => Promise<void>;
   onClose: () => void;
+  hospitalData: UpdateHospitalData | null; // null if creating new hospital
 }
 
 const CreateHospital: React.FC<CreateHospitalProps> = ({
   onAddHospital,
   onClose,
+  hospitalData,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NewHospitalData>({
     name: "",
     address: "",
     contact: "",
     email: "",
   });
 
+  // Set form data if hospitalData is provided on component mount
+  useEffect(() => {
+    if (hospitalData) {
+      setFormData(hospitalData);
+    }
+  }, [hospitalData]);
+
   // Function to handle form input change
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -62,7 +77,6 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           borderRadius: 3,
           boxShadow: 4,
           bgcolor: "whitesmoke",
-          transition: "all 0.3s ease-in-out",
         }}
       >
         <Typography
@@ -72,7 +86,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           gutterBottom
           sx={{ color: "#7241ff" }}
         >
-          Create Hospital
+          {hospitalData ? "Update Hospital" : "Create Hospital"}
         </Typography>
         <TextField
           label="Hospital Name"
@@ -150,7 +164,6 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           <Button
             type="submit"
             variant="contained"
-            color="primary"
             fullWidth
             sx={{
               padding: "12px 20px",
@@ -165,11 +178,10 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
               transition: "background-color 0.3s ease-in-out",
             }}
           >
-            Create
+            {hospitalData ? "Update" : "Create"}
           </Button>
           <Button
             variant="outlined"
-            color="secondary"
             fullWidth
             onClick={onClose}
             sx={{
