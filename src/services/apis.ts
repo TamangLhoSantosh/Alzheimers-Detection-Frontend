@@ -20,6 +20,14 @@ const apis = {
       },
     });
   },
+
+  getHospitalData() {
+    return axiosClient.get("/hospital", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
 };
 
 export default apis;

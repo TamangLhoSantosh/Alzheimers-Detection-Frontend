@@ -16,6 +16,7 @@ const CreateAccount = () => {
     password: "",
   });
 
+  // Function to handle form input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -24,12 +25,14 @@ const CreateAccount = () => {
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
+  // Function to close message
   const onclose = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {

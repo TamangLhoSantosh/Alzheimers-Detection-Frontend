@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 
+// Props interface
 interface Props {
   onClose: () => void;
   message: string;
