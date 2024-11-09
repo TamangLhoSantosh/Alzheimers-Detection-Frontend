@@ -41,29 +41,47 @@ const Login = () => {
     setShowMessage(false);
   };
 
+  // Validate form data
+  const validate = () => {
+    if (values.email === "" || values.password === "") return false;
+    return true;
+  };
+
+  // Handle the form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await apis.login({
-        username: values.email,
-        password: values.password,
-      });
+    if (validate()) {
+      try {
+        const response = await apis.login({
+          username: values.email,
+          password: values.password,
+        });
 
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.access_token);
-        localStorage.setItem("refresh", response.data.refresh_token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
+        if (response.status === 200) {
+          localStorage.setItem("token", response.data.access_token);
+          localStorage.setItem("refresh", response.data.refresh_token);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          localStorage.setItem("is_admin", response.data.is_admin);
+          localStorage.setItem(
+            "is_hospital_admin",
+            response.data.is_hospital_admin
+          );
+          setShowMessage(true);
+          setTitle("Success");
+          setMessage(response.data.message);
+        }
+      } catch (e: any) {
+        // Handle error
+        if (e.response) {
+          setShowMessage(true);
+          setTitle("Error");
+          setMessage(e.response.data.detail);
+        }
       }
-    } catch (e: any) {
-      // Handle error
-      if (e.response) {
-        setShowMessage(true);
-        setTitle("Error");
-        setMessage(e.response.data.detail);
-      }
+    } else {
+      setShowMessage(true);
+      setTitle("Empty Fields");
+      setMessage("Please Enter All Values");
     }
   };
 
@@ -72,15 +90,23 @@ const Login = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height="510px"
+      height="100vh"
+      sx={{
+        background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
+        padding: "20px",
+      }}
     >
       <Box
         width="30%"
         display="flex"
         justifyContent="center"
         flexDirection="column"
+        bgcolor="white"
+        p="20px"
+        borderRadius="8px"
+        boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
       >
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
+        <Typography variant="h4" fontWeight="bold" gutterBottom color="#7241ff">
           Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} mt={3}>
@@ -93,7 +119,17 @@ const Login = () => {
             fullWidth
             onChange={handleChange}
             required
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#03B0FD",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7241ff",
+                },
+              },
+            }}
           />
           {/* Password Field with Toggle */}
           <TextField
@@ -104,7 +140,17 @@ const Login = () => {
             fullWidth
             onChange={handleChange}
             required
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#03B0FD",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#7241ff",
+                },
+              },
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -125,6 +171,12 @@ const Login = () => {
             variant="contained"
             color="primary"
             size="large"
+            sx={{
+              bgcolor: "#7241ff",
+              "&:hover": {
+                bgcolor: "#03B0FD",
+              },
+            }}
           >
             Login
           </Button>

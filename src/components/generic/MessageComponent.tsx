@@ -1,40 +1,46 @@
 import { Box, Button, Typography } from "@mui/material";
 
+// Props interface
 interface Props {
   onClose: () => void;
-  message: String;
-  title: String;
+  message: string;
+  title: string;
 }
 
 const MessageComponent = ({ onClose, message, title }: Props) => {
   return (
     <Box
-      display={"flex"}
-      height={"100%"}
-      width={"100%"}
-      position={"fixed"}
+      display="flex"
+      height="100%"
+      width="100%"
+      position="fixed"
       top={0}
-      justifyContent={"center"}
-      alignItems={"center"}
-      bgcolor={"rgba(0,0,0,0.5)"}
-      zIndex={"50"}
+      justifyContent="center"
+      alignItems="center"
+      bgcolor="rgba(0, 0, 0, 0.5)"
+      zIndex="50"
     >
       <Box
-        position={"relative"}
-        bgcolor={"white"}
+        position="relative"
+        bgcolor="#FFFFFF"
         p={6}
         width={300}
         borderRadius={10}
         boxShadow={20}
       >
-        <Box textAlign={"center"}>
-          <Typography fontWeight="bold" fontSize="30px" gutterBottom>
+        <Box textAlign="center">
+          <Typography
+            fontWeight="bold"
+            fontSize="30px"
+            gutterBottom
+            color="#7241ff"
+          >
             {title}
           </Typography>
           <Typography
             fontWeight="bold"
             fontSize="20px"
-            marginBottom={"20px"}
+            marginBottom="20px"
             gutterBottom
           >
             {message}
@@ -44,26 +50,18 @@ const MessageComponent = ({ onClose, message, title }: Props) => {
             color="primary"
             size="large"
             onClick={onClose}
+            sx={{
+              bgcolor: "#7241ff",
+              "&:hover": {
+                bgcolor: "#03B0FD",
+              },
+            }}
           >
             Close
           </Button>
         </Box>
       </Box>
     </Box>
-    // <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    //   <div className="relative bg-white rounded-lg shadow-lg p-6 w-96">
-    //     <div className="text-center">
-    //       <h2 className="text-2xl font-semibold mb-4">{title}</h2>
-    //       <p className="text-gray-700 mb-4">{message}</p>
-    //       <button
-    //         className="bg-black text-white px-4 py-2 rounded shadow"
-    //         onClick={onClose}
-    //       >
-    //         Close
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

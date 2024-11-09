@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
-import { CheckBox } from "@mui/icons-material";
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -17,6 +16,7 @@ const CreateAccount = () => {
     password: "",
   });
 
+  // Function to handle form input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -25,12 +25,14 @@ const CreateAccount = () => {
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
+  // Function to close message
   const onclose = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -64,124 +66,190 @@ const CreateAccount = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" mt={5}>
-      <Box width="30%">
-        <Box component="form" onSubmit={handleSubmit} display="grid" gap={2}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            Sign Up
-          </Typography>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      sx={{
+        background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
+        padding: "20px",
+      }}
+    >
+      <Box
+        width="100%"
+        maxWidth="450px"
+        bgcolor="white"
+        p={4}
+        borderRadius="16px"
+        boxShadow={6}
+        sx={{
+          boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          color="#7241ff"
+          textAlign="center"
+          gutterBottom
+        >
+          Sign Up
+        </Typography>
 
-          {/* All fields will be in one column now */}
-          <Box
-            display="grid"
-            gap={2}
-            gridTemplateColumns="1fr"
-            justifyContent="center"
+        <Box component="form" onSubmit={handleSubmit} display="grid" gap={3}>
+          {/* Form fields with improved spacing */}
+          <TextField
+            label="First Name"
+            name="firstname"
+            placeholder="Enter your First Name"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Middle Name"
+            name="middlename"
+            placeholder="Enter your Middle Name"
+            fullWidth
+            onChange={handleChange}
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Last Name"
+            name="lastname"
+            placeholder="Enter your Last Name"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="DOB"
+            name="dob"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Gender"
+            name="gender"
+            select
+            fullWidth
+            value={values.gender}
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
           >
-            {/* First Name */}
-            <TextField
-              label="First Name"
-              name="firstname"
-              placeholder="Enter your First Name"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* Middle Name */}
-            <TextField
-              label="Middle Name"
-              name="middlename"
-              placeholder="Enter your Middle Name"
-              fullWidth
-              onChange={handleChange}
-            />
-            {/* Last Name */}
-            <TextField
-              label="Last Name"
-              name="lastname"
-              placeholder="Enter your Last Name"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* DOB */}
-            <TextField
-              label="DOB"
-              name="dob"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* Gender */}
-            <TextField
-              label="Gender"
-              name="gender"
-              select
-              fullWidth
-              value={values.gender}
-              onChange={handleChange}
-              required
-            >
-              <MenuItem value="" disabled>
-                Select your Gender
-              </MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
-            </TextField>
-            {/* Contact No */}
-            <TextField
-              label="Contact Number"
-              name="contact"
-              placeholder="Enter your Contact No"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* Address */}
-            <TextField
-              label="Address"
-              name="address"
-              placeholder="Enter your Address"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* Email */}
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              placeholder="Enter your Email"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-            {/* Password */}
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              placeholder="Enter Password"
-              fullWidth
-              onChange={handleChange}
-              required
-            />
-          </Box>
-          <Box mt={4}>
+            <MenuItem value="" disabled>
+              Select your Gender
+            </MenuItem>
+            <MenuItem value="male">Male</MenuItem>
+            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="other">Other</MenuItem>
+          </TextField>
+          <TextField
+            label="Contact Number"
+            name="contact"
+            placeholder="Enter your Contact No"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Address"
+            name="address"
+            placeholder="Enter your Address"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Enter your Email"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="Enter Password"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <Box display="flex" justifyContent="center" mt={3}>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               size="large"
+              sx={{
+                bgcolor: "#7241ff",
+                "&:hover": {
+                  bgcolor: "#03B0FD",
+                },
+                borderRadius: "8px",
+                padding: "12px 25px",
+                fontWeight: "bold",
+                transition: "all 0.3s ease-in-out",
+              }}
             >
-              Submit
+              Create Account
             </Button>
           </Box>
         </Box>
       </Box>
+
       {showMessage && (
         <MessageComponent message={message} title={title} onClose={onclose} />
       )}
