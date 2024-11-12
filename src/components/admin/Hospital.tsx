@@ -1,20 +1,13 @@
 import { Box, Typography, Button } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CreateHospital from "./CreateHospital";
 import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
-
-// Interface for hospital data
-interface HospitalData {
-  id: string;
-  name: string;
-  email: string;
-  contact: string;
-  address: string;
-}
+import useGetHospital, {
+  HospitalData,
+} from "../../hooks/admin/useGetHospitals";
 
 const Hospital = () => {
-  const [hospitalData, setHospitalData] = useState<HospitalData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
     null
@@ -22,7 +15,8 @@ const Hospital = () => {
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const { hospitals, loading, error } = useGetHospital();
 
   // Function to close message
   const closeMessage = () => {
@@ -40,24 +34,6 @@ const Hospital = () => {
     setMessage(errorMessage);
   };
 
-  // Function to fetch hospital data
-  const fetchHospitalData = async () => {
-    setLoading(true);
-    try {
-      const response = await apis.getHospitalData();
-      if (response.status === 200) setHospitalData(response.data);
-    } catch (e: any) {
-      handleApiError(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch hospital data on component mount
-  useEffect(() => {
-    fetchHospitalData();
-  }, []);
-
   // Function to handle new hospital addition
   const addHospital = async (newHospital: any) => {
     try {
@@ -66,7 +42,6 @@ const Hospital = () => {
         setShowMessage(true);
         setTitle("Success");
         setMessage(response.data.message);
-        fetchHospitalData();
         setShowForm(false);
       }
     } catch (e: any) {
@@ -85,7 +60,6 @@ const Hospital = () => {
         setShowMessage(true);
         setTitle("Success");
         setMessage(response.data.message);
-        fetchHospitalData();
         setShowForm(false);
       }
     } catch (e: any) {
@@ -115,12 +89,12 @@ const Hospital = () => {
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             Loading hospital data...
           </Typography>
-        ) : hospitalData.length === 0 ? (
+        ) : (hospitals ?? []).length === 0 ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             No hospitals found
           </Typography>
         ) : (
-          hospitalData.map((hospital, index) => (
+          (hospitals ?? []).map((hospital, index) => (
             <Box
               key={index}
               mb={4}
@@ -161,7 +135,6 @@ const Hospital = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={fetchHospitalData}
           style={{
             backgroundColor: "#7241FF",
             color: "#fff",
@@ -194,7 +167,7 @@ const Hospital = () => {
           <CreateHospital
             onAddHospital={currentHospital ? updateHospital : addHospital}
             onClose={() => setShowForm(false)}
-            hospitalData={currentHospital}
+            // hospitalData={currentHospital}
           />
         )}
 

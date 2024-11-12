@@ -1,5 +1,5 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Interface for adding a new hospital (no id)
 interface NewHospitalData {
@@ -10,21 +10,21 @@ interface NewHospitalData {
 }
 
 // Interface for updating an existing hospital (with id)
-interface UpdateHospitalData extends NewHospitalData {
-  id: string;
-}
+// interface UpdateHospitalData extends NewHospitalData {
+//   id: string;
+// }
 
 // Props Interface
 interface CreateHospitalProps {
   onAddHospital: (newHospital: NewHospitalData) => Promise<void>;
   onClose: () => void;
-  hospitalData: UpdateHospitalData | null; // null if creating new hospital
+  // hospitalData: UpdateHospitalData | null; // null if creating new hospital
 }
 
 const CreateHospital: React.FC<CreateHospitalProps> = ({
   onAddHospital,
   onClose,
-  hospitalData,
+  // hospitalData,
 }) => {
   const [formData, setFormData] = useState<NewHospitalData>({
     name: "",
@@ -33,12 +33,12 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
     email: "",
   });
 
-  // Set form data if hospitalData is provided on component mount
-  useEffect(() => {
-    if (hospitalData) {
-      setFormData(hospitalData);
-    }
-  }, [hospitalData]);
+  // // Set form data if hospitalData is provided on component mount
+  // useEffect(() => {
+  //   if (hospitalData) {
+  //     setFormData(hospitalData);
+  //   }
+  // }, [hospitalData]);
 
   // Function to handle form input change
 
@@ -86,7 +86,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           gutterBottom
           sx={{ color: "#7241ff" }}
         >
-          {hospitalData ? "Update Hospital" : "Create Hospital"}
+          {/* {hospitalData ? "Update Hospital" : "Create Hospital"} */}
         </Typography>
         <TextField
           label="Hospital Name"
@@ -178,7 +178,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
               transition: "background-color 0.3s ease-in-out",
             }}
           >
-            {hospitalData ? "Update" : "Create"}
+            {/* {hospitalData ? "Update" : "Create"} */}
           </Button>
           <Button
             variant="outlined"
