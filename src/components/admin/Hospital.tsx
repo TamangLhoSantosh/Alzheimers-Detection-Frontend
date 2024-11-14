@@ -6,17 +6,19 @@ import MessageComponent from "../generic/MessageComponent";
 import useGetHospital, {
   HospitalData,
 } from "../../hooks/admin/useGetHospitals";
+import usePostHospital from "../../hooks/admin/usePostHospital";
 
 const Hospital = () => {
   const [showForm, setShowForm] = useState(false);
-  const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
-    null
-  );
+  // const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
+  //   null
+  // );
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
   const { hospitals, loading, error, refetch } = useGetHospital();
+  const { isLoading, createHospital } = usePostHospital();
 
   if (error) {
     setShowMessage(true);
@@ -42,17 +44,22 @@ const Hospital = () => {
 
   // Function to handle new hospital addition
   const addHospital = async (newHospital: any) => {
+    console.log("asdf");
     try {
-      const response = await apis.createHospital(newHospital);
-      if (response.status === 200) {
+      createHospital(newHospital);
+      if (error) {
+        handleApiError(error);
+      } else if (isLoading) {
         setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
-        setShowForm(false);
-        refetch();
+        setTitle("Loading");
+        setMessage("Adding hospital...");
       }
     } catch (e: any) {
       handleApiError(e);
+    } finally {
+      setShowForm(false);
+      setShowMessage(false);
+      refetch();
     }
   };
 
@@ -76,7 +83,7 @@ const Hospital = () => {
   };
 
   const handleEdit = (hospital: HospitalData) => {
-    setCurrentHospital(hospital);
+    // setCurrentHospital(hospital);
     setShowForm(true);
   };
 
@@ -90,9 +97,13 @@ const Hospital = () => {
       >
         Hospital Information
       </Typography>
-      <Box display="grid" gridRow={4}>
+      <Box
+        display="grid"
+        gridTemplateColumns="repeat(3, 1fr)"
+        gap={2}
+        alignItems="center"
+      >
         {/* Displaying multiple hospitals */}
-
         {loading ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             Loading hospital data...
@@ -174,7 +185,7 @@ const Hospital = () => {
         {/* Create Hospital Form */}
         {showForm && (
           <CreateHospital
-            onAddHospital={currentHospital ? updateHospital : addHospital}
+            onAddHospital={addHospital}
             onClose={() => setShowForm(false)}
             // hospitalData={currentHospital}
           />

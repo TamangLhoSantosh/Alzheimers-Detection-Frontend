@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import apiClient from "../../services/axiosClient";
 
@@ -20,7 +21,7 @@ const usePostData = <T>(endpoint: string): UsePostDataResult<T> => {
     AxiosError,
     unknown
   >(async (postData) => {
-    const authToken = localStorage.getItem("accessToken");
+    const authToken = localStorage.getItem("token");
     const headers: Record<string, string> = {};
 
     if (authToken) {
