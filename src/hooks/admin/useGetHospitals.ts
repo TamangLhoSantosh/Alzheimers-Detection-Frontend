@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "../../services/axiosClient";
 
 export interface HospitalData {
@@ -29,6 +29,7 @@ const useGetHospitals = () => {
     data: hospitals,
     isLoading,
     error,
+    refetch,
   } = useQuery<HospitalData[], Error>(["hospitals"], fetchHospitals, {
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 30 * 60 * 1000, // 30 minutes
@@ -46,6 +47,7 @@ const useGetHospitals = () => {
     hospitals,
     loading: isLoading,
     error: error ? getErrorMessage(error) : null,
+    refetch,
   };
 };
 

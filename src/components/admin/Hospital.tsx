@@ -16,7 +16,13 @@ const Hospital = () => {
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
-  const { hospitals, loading, error } = useGetHospital();
+  const { hospitals, loading, error, refetch } = useGetHospital();
+
+  if (error) {
+    setShowMessage(true);
+    setTitle("Error");
+    setMessage(error);
+  }
 
   // Function to close message
   const closeMessage = () => {
@@ -43,6 +49,7 @@ const Hospital = () => {
         setTitle("Success");
         setMessage(response.data.message);
         setShowForm(false);
+        refetch();
       }
     } catch (e: any) {
       handleApiError(e);
@@ -61,6 +68,7 @@ const Hospital = () => {
         setTitle("Success");
         setMessage(response.data.message);
         setShowForm(false);
+        refetch();
       }
     } catch (e: any) {
       handleApiError(e);
@@ -135,6 +143,7 @@ const Hospital = () => {
         <Button
           variant="contained"
           color="primary"
+          onClick={() => refetch()}
           style={{
             backgroundColor: "#7241FF",
             color: "#fff",
