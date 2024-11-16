@@ -1,18 +1,16 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import CreateHospital from "./CreateHospital";
-import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
 import useGetHospital, {
   HospitalData,
 } from "../../hooks/admin/useGetHospitals";
-import usePostHospital from "../../hooks/admin/usePostHospital";
 
 const Hospital = () => {
   const [showForm, setShowForm] = useState(false);
-  // const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
-  //   null
-  // );
+  const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
+    null
+  );
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
@@ -23,7 +21,6 @@ const Hospital = () => {
     error,
     refetch,
   } = useGetHospital();
-  const { isLoading, createHospital } = usePostHospital();
 
   if (error) {
     setShowMessage(true);
@@ -38,57 +35,8 @@ const Hospital = () => {
     setShowMessage(false);
   };
 
-  // Function to handle API errors
-  const handleApiError = (e: any) => {
-    const errorMessage =
-      e.response?.data?.detail || "An unexpected error occurred.";
-    setShowMessage(true);
-    setTitle("Error");
-    setMessage(errorMessage);
-  };
-
-  // Function to handle new hospital addition
-  const addHospital = async (newHospital: any) => {
-    console.log("asdf");
-    try {
-      createHospital(newHospital);
-      if (error) {
-        handleApiError(error);
-      } else if (isLoading) {
-        setShowMessage(true);
-        setTitle("Loading");
-        setMessage("Adding hospital...");
-      }
-    } catch (e: any) {
-      handleApiError(e);
-    } finally {
-      setShowForm(false);
-      setShowMessage(false);
-      refetch();
-    }
-  };
-
-  // Function to handle hospital update
-  const updateHospital = async (updatedHospital: any) => {
-    try {
-      const response = await apis.updateHospital(
-        updatedHospital.id,
-        updatedHospital
-      );
-      if (response.status === 202) {
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
-        setShowForm(false);
-        refetch();
-      }
-    } catch (e: any) {
-      handleApiError(e);
-    }
-  };
-
   const handleEdit = (hospital: HospitalData) => {
-    // setCurrentHospital(hospital);
+    setCurrentHospital(hospital);
     setShowForm(true);
   };
 
@@ -190,9 +138,12 @@ const Hospital = () => {
         {/* Create Hospital Form */}
         {showForm && (
           <CreateHospital
-            onAddHospital={addHospital}
-            onClose={() => setShowForm(false)}
-            // hospitalData={currentHospital}
+            onClose={() => {
+              setShowForm(false);
+              refetch();
+              setCurrentHospital(null);
+            }}
+            hospitalData={currentHospital}
           />
         )}
 

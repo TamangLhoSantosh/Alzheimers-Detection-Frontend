@@ -1,47 +1,43 @@
+import { useEffect, useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
 
-// Interface for adding a new hospital (no id)
-interface NewHospitalData {
-  name: string;
-  email: string;
-  contact: string;
-  address: string;
-}
+import { HospitalData } from "../../hooks/admin/useGetHospitals";
+import usePostHospital, {
+  CreateHospitalData,
+} from "../../hooks/admin/usePostHospital";
+import useUpdateHospital from "../../hooks/admin/useUpdateHospital";
 
-// Interface for updating an existing hospital (with id)
-// interface UpdateHospitalData extends NewHospitalData {
-//   id: string;
-// }
+import MessageComponent from "../generic/MessageComponent";
 
 // Props Interface
 interface CreateHospitalProps {
-  onAddHospital: (newHospital: NewHospitalData) => Promise<void>;
   onClose: () => void;
-  // hospitalData: UpdateHospitalData | null; // null if creating new hospital
+  hospitalData: HospitalData | null; // null if creating new hospital
 }
 
 const CreateHospital: React.FC<CreateHospitalProps> = ({
-  onAddHospital,
   onClose,
-  // hospitalData,
+  hospitalData,
 }) => {
-  const [formData, setFormData] = useState<NewHospitalData>({
-    name: "",
-    address: "",
-    contact: "",
-    email: "",
-  });
+  const [formData, setFormData] = useState<CreateHospitalData | HospitalData>(
+    hospitalData || ({} as HospitalData | CreateHospitalData)
+  );
 
-  // // Set form data if hospitalData is provided on component mount
-  // useEffect(() => {
-  //   if (hospitalData) {
-  //     setFormData(hospitalData);
-  //   }
-  // }, [hospitalData]);
+  const { createHospital, isLoading: creating } = usePostHospital();
+  const { updateHospital, isLoading: updating } = useUpdateHospital();
+
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  // Set form data if hospitalData is provided on component mount
+  useEffect(() => {
+    if (hospitalData) {
+      setFormData(hospitalData);
+    }
+  }, [hospitalData]);
 
   // Function to handle form input change
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -49,7 +45,32 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onAddHospital(formData);
+    try {
+      if (hospitalData) {
+        // Update hospital
+        await updateHospital({ ...hospitalData, ...formData });
+        setShowMessage(true);
+        setTitle("Success");
+        setMessage("Hospital updated successfully!");
+      } else {
+        // Create hospital
+        createHospital(formData as CreateHospitalData);
+        setShowMessage(true);
+        setTitle("Success");
+        setMessage("Hospital added successfully!");
+      }
+      onClose();
+    } catch (error: any) {
+      setShowMessage(true);
+      setTitle("Error");
+      setMessage(error.response?.data?.detail || "An error occurred.");
+    }
+  };
+
+  const closeMessage = () => {
+    setMessage("");
+    setTitle("");
+    setShowMessage(false);
   };
 
   return (
@@ -86,7 +107,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           gutterBottom
           sx={{ color: "#7241ff" }}
         >
-          {/* {hospitalData ? "Update Hospital" : "Create Hospital"} */}
+          {hospitalData ? "Edit Hospital" : "Add Hospital"}
         </Typography>
         <TextField
           label="Hospital Name"
@@ -177,8 +198,13 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
               },
               transition: "background-color 0.3s ease-in-out",
             }}
+            disabled={creating || updating}
           >
-            {/* {hospitalData ? "Update" : "Create"} */}
+            {creating || updating
+              ? "Saving..."
+              : hospitalData
+              ? "Update"
+              : "Add"}
           </Button>
           <Button
             variant="outlined"
@@ -201,6 +227,13 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           </Button>
         </Box>
       </Box>
+      {showMessage && (
+        <MessageComponent
+          title={title}
+          message={message}
+          onClose={closeMessage}
+        />
+      )}
     </Box>
   );
 };
