@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import apiClient from "../../services/axiosClient";
+import apiClient from "../../services/apiClient";
 
 export interface FetchResponse<T> {
   count: number;

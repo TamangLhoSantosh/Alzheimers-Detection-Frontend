@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import apiClient from "../../services/axiosClient";
+import apiClient from "../../services/apiClient";
 
 interface UsePostDataResult<T> {
   data: T | null;
@@ -15,14 +15,19 @@ interface UsePostDataResult<T> {
   ) => void;
 }
 
-const usePostData = <T>(endpoint: string): UsePostDataResult<T> => {
+const usePostData = <T>(
+  endpoint: string,
+  defaultHeaders?: Record<string, string>
+): UsePostDataResult<T> => {
   const { mutate, data, error, isLoading } = useMutation<
     T,
     AxiosError,
     unknown
   >(async (postData) => {
     const authToken = localStorage.getItem("token");
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      ...defaultHeaders,
+    };
 
     if (authToken) {
       headers.Authorization = `Bearer ${authToken}`;

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { HospitalData } from "./useGetHospitals";
-import apiClient from "../../services/axiosClient";
+import apiClient from "../../services/apiClient";
 
 const useUpdateHospital = () => {
   const mutation = useMutation(async (hospitalData: HospitalData) => {

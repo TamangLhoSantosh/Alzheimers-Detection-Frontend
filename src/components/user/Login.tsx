@@ -8,80 +8,73 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
+import useLogin, { LoginaData } from "../../hooks/user/useLogin";
 
 const Login = () => {
-  const [values, setValues] = useState({
-    email: "",
+  const [values, setValues] = useState<LoginaData>({
+    username: "",
     password: "",
   });
-
-  // State for toggling password visibility
   const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading, error } = useLogin();
+
+  // State to handle messages
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
 
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
 
   // Toggle password visibility
-  const handleClickShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-  const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  // Close message component
+  const closeMessage = () =>
+    setMessageData({ open: false, title: "", message: "" });
 
-  const onclose = () => {
-    setMessage("");
-    setTitle("");
-    setShowMessage(false);
-  };
+  // Validate form fields
+  const validate = () => values.username !== "" && values.password !== "";
 
-  // Validate form data
-  const validate = () => {
-    if (values.email === "" || values.password === "") return false;
-    return true;
-  };
-
-  // Handle the form submission
+  // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validate()) {
-      try {
-        const response = await apis.login({
-          username: values.email,
-          password: values.password,
-        });
 
-        if (response.status === 200) {
-          localStorage.setItem("token", response.data.access_token);
-          localStorage.setItem("refresh", response.data.refresh_token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          localStorage.setItem("is_admin", response.data.is_admin);
-          localStorage.setItem(
-            "is_hospital_admin",
-            response.data.is_hospital_admin
-          );
-          setShowMessage(true);
-          setTitle("Success");
-          setMessage(response.data.message);
-        }
-      } catch (e: any) {
-        // Handle error
-        if (e.response) {
-          setShowMessage(true);
-          setTitle("Error");
-          setMessage(e.response.data.detail);
-        }
-      }
+    if (!validate()) {
+      setMessageData({
+        message: "Please Enter All Values",
+        title: "Empty Fields",
+        open: true,
+      });
+      return;
+    }
+
+    login(values);
+
+    if (isLoading) return;
+
+    if (error) {
+      setMessageData({
+        message: error || "An error occurred",
+        title: "Error",
+        open: true,
+      });
     } else {
-      setShowMessage(true);
-      setTitle("Empty Fields");
-      setMessage("Please Enter All Values");
+      setMessageData({
+        message: "Login Successful",
+        title: "Success",
+        open: true,
+      });
     }
   };
 
@@ -96,6 +89,27 @@ const Login = () => {
         padding: "20px",
       }}
     >
+      {/* Loading State */}
+      {isLoading && (
+        <Box
+          display="flex"
+          position="absolute"
+          top="50%"
+          justifyContent="center"
+          alignItems="center"
+          zIndex={99}
+          sx={{
+            background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
+            padding: "20px",
+          }}
+        >
+          <Typography variant="h4" fontWeight="bold" color="white">
+            Loading...
+          </Typography>
+        </Box>
+      )}
+
+      {/* Login Form */}
       <Box
         width="30%"
         display="flex"
@@ -110,12 +124,12 @@ const Login = () => {
           Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} mt={3}>
-          {/* Email Field */}
+          {/* Username Field */}
           <TextField
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
+            label="Username"
+            name="username"
+            type="text"
+            placeholder="Enter your username"
             fullWidth
             onChange={handleChange}
             required
@@ -131,6 +145,7 @@ const Login = () => {
               },
             }}
           />
+
           {/* Password Field with Toggle */}
           <TextField
             label="Password"
@@ -156,7 +171,7 @@ const Login = () => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
+                    onClick={togglePasswordVisibility}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -165,6 +180,7 @@ const Login = () => {
               ),
             }}
           />
+
           {/* Login Button */}
           <Button
             type="submit"
@@ -182,8 +198,14 @@ const Login = () => {
           </Button>
         </Box>
       </Box>
-      {showMessage && (
-        <MessageComponent message={message} title={title} onClose={onclose} />
+
+      {/* Message Component */}
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={closeMessage}
+        />
       )}
     </Box>
   );

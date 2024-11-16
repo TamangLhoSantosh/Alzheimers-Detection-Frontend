@@ -15,7 +15,7 @@ interface CreateHospitalResult {
   createHospital: (hospitalData: CreateHospitalData) => void;
 }
 
-const usePostHospital = (): CreateHospitalResult => {
+const useCreateHospital = (): CreateHospitalResult => {
   const queryClient = useQueryClient();
   const { mutate, isLoading, error } = usePostData<void>("/hospital");
 
@@ -47,4 +47,4 @@ const usePostHospital = (): CreateHospitalResult => {
   };
 };
 
-export default usePostHospital;
+export default useCreateHospital;

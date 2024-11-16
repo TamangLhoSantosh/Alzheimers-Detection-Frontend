@@ -4,7 +4,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { HospitalData } from "../../hooks/admin/useGetHospitals";
 import usePostHospital, {
   CreateHospitalData,
-} from "../../hooks/admin/usePostHospital";
+} from "../../hooks/admin/useCreateHospital";
 import useUpdateHospital from "../../hooks/admin/useUpdateHospital";
 
 import MessageComponent from "../generic/MessageComponent";
