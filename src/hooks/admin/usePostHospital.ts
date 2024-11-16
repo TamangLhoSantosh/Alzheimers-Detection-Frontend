@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import usePostData from "../generic/usePostDate";
+import usePostData from "../generic/usePostData";
+import { AxiosError } from "axios";
 
 export interface CreateHospitalData {
   name: string;
@@ -21,13 +22,24 @@ const usePostHospital = (): CreateHospitalResult => {
   const createHospital = (hospitalData: CreateHospitalData) => {
     mutate(hospitalData, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["hospitals"]);
+        queryClient.invalidateQueries({
+          queryKey: ["hospitals"],
+          exact: false,
+        });
       },
-      onError: (err: unknown) => {
-        console.error("Error creating hospital:", err);
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          console.error(
+            "Error creating hospital:",
+            err.response?.data || err.message
+          );
+        } else {
+          console.error("Unexpected error:", err);
+        }
       },
     });
   };
+
   return {
     isLoading,
     error,

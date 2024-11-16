@@ -17,7 +17,12 @@ const Hospital = () => {
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
-  const { hospitals, loading, error, refetch } = useGetHospital();
+  const {
+    data: hospitals,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useGetHospital();
   const { isLoading, createHospital } = usePostHospital();
 
   if (error) {
