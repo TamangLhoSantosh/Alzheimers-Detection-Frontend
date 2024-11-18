@@ -28,9 +28,7 @@ const useLogin = () => {
   const login = (loginData: LoginaData) => {
     mutate(loginData, {
       onSuccess: (response) => {
-        if (response.status === 200) {
-          saveAuthTokens(response.data);
-        }
+        saveAuthTokens(response);
       },
       onError: (err) => {
         const errorMessage =

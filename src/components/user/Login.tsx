@@ -61,8 +61,6 @@ const Login = () => {
 
     login(values);
 
-    if (isLoading) return;
-
     if (error) {
       setMessageData({
         message: error || "An error occurred",
