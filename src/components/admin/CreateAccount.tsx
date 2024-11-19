@@ -1,20 +1,27 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
-import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
+import useCreateUser, {
+  CreateUserAccount,
+} from "../../hooks/admin/useCreateUser";
 
 const CreateAccount = () => {
-  const [values, setValues] = useState({
-    firstname: "",
-    middlename: "",
-    lastname: "",
+  const [values, setValues] = useState<CreateUserAccount>({
+    username: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
     dob: "",
     gender: "",
     contact: "",
     address: "",
     email: "",
     password: "",
+    is_admin: false,
+    is_hospital_admin: false,
   });
+
+  const { isLoading, error, createUser } = useCreateUser();
 
   // Function to handle form input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,33 +42,16 @@ const CreateAccount = () => {
   // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await apis.createUserAccount({
-        username: values.email,
-        first_name: values.firstname,
-        middle_name: values.middlename,
-        last_name: values.lastname,
-        dob: values.dob,
-        gender: values.gender,
-        contact: values.contact,
-        address: values.address,
-        email: values.email,
-        is_admin: false,
-        is_hospital_admin: false,
-        password: values.password,
-      });
-      if (response.status === 200) {
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
-      }
-    } catch (e: any) {
-      // Handle error
-      if (e.response) {
-        setShowMessage(true);
-        setTitle("Error");
-        setMessage(e.response.data.detail);
-      }
+    createUser(values);
+
+    if (error) {
+      setShowMessage(true);
+      setMessage(error || "An error occurred");
+      setTitle("Error");
+    } else {
+      setShowMessage(true);
+      setMessage("Account creation successful. Email is sent to the mail.");
+      setTitle("Success");
     }
   };
 
@@ -76,6 +66,25 @@ const CreateAccount = () => {
         padding: "20px",
       }}
     >
+      {/* Loading State */}
+      {isLoading && (
+        <Box
+          display="flex"
+          position="absolute"
+          top="50%"
+          justifyContent="center"
+          alignItems="center"
+          zIndex={99}
+          sx={{
+            background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
+            padding: "20px",
+          }}
+        >
+          <Typography variant="h4" fontWeight="bold" color="white">
+            Loading...
+          </Typography>
+        </Box>
+      )}
       <Box
         width="100%"
         maxWidth="450px"
@@ -103,7 +112,7 @@ const CreateAccount = () => {
           <TextField
             label="First Name"
             name="firstname"
-            placeholder="Enter your First Name"
+            placeholder="Enter First Name"
             fullWidth
             onChange={handleChange}
             required
@@ -116,7 +125,7 @@ const CreateAccount = () => {
           <TextField
             label="Middle Name"
             name="middlename"
-            placeholder="Enter your Middle Name"
+            placeholder="Enter Middle Name"
             fullWidth
             onChange={handleChange}
             variant="outlined"
@@ -128,7 +137,20 @@ const CreateAccount = () => {
           <TextField
             label="Last Name"
             name="lastname"
-            placeholder="Enter your Last Name"
+            placeholder="Enter Last Name"
+            fullWidth
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Username"
+            name="username"
+            placeholder="Enter Username"
             fullWidth
             onChange={handleChange}
             required
@@ -167,7 +189,7 @@ const CreateAccount = () => {
             }}
           >
             <MenuItem value="" disabled>
-              Select your Gender
+              Select Gender
             </MenuItem>
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="female">Female</MenuItem>
@@ -176,7 +198,7 @@ const CreateAccount = () => {
           <TextField
             label="Contact Number"
             name="contact"
-            placeholder="Enter your Contact No"
+            placeholder="Enter Contact No"
             fullWidth
             onChange={handleChange}
             required
@@ -189,7 +211,7 @@ const CreateAccount = () => {
           <TextField
             label="Address"
             name="address"
-            placeholder="Enter your Address"
+            placeholder="Enter Address"
             fullWidth
             onChange={handleChange}
             required
@@ -203,7 +225,7 @@ const CreateAccount = () => {
             label="Email"
             name="email"
             type="email"
-            placeholder="Enter your Email"
+            placeholder="Enter Email"
             fullWidth
             onChange={handleChange}
             required

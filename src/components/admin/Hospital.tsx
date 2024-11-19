@@ -1,20 +1,12 @@
 import { Box, Typography, Button } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CreateHospital from "./CreateHospital";
-import apis from "../../services/apis";
 import MessageComponent from "../generic/MessageComponent";
-
-// Interface for hospital data
-interface HospitalData {
-  id: string;
-  name: string;
-  email: string;
-  contact: string;
-  address: string;
-}
+import useGetHospital, {
+  HospitalData,
+} from "../../hooks/admin/useGetHospitals";
 
 const Hospital = () => {
-  const [hospitalData, setHospitalData] = useState<HospitalData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [currentHospital, setCurrentHospital] = useState<HospitalData | null>(
     null
@@ -22,75 +14,25 @@ const Hospital = () => {
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const {
+    data: hospitals,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useGetHospital();
+
+  if (error) {
+    setShowMessage(true);
+    setTitle("Error");
+    setMessage(error);
+  }
 
   // Function to close message
   const closeMessage = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
-  };
-
-  // Function to handle API errors
-  const handleApiError = (e: any) => {
-    const errorMessage =
-      e.response?.data?.detail || "An unexpected error occurred.";
-    setShowMessage(true);
-    setTitle("Error");
-    setMessage(errorMessage);
-  };
-
-  // Function to fetch hospital data
-  const fetchHospitalData = async () => {
-    setLoading(true);
-    try {
-      const response = await apis.getHospitalData();
-      if (response.status === 200) setHospitalData(response.data);
-    } catch (e: any) {
-      handleApiError(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch hospital data on component mount
-  useEffect(() => {
-    fetchHospitalData();
-  }, []);
-
-  // Function to handle new hospital addition
-  const addHospital = async (newHospital: any) => {
-    try {
-      const response = await apis.createHospital(newHospital);
-      if (response.status === 200) {
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
-        fetchHospitalData();
-        setShowForm(false);
-      }
-    } catch (e: any) {
-      handleApiError(e);
-    }
-  };
-
-  // Function to handle hospital update
-  const updateHospital = async (updatedHospital: any) => {
-    try {
-      const response = await apis.updateHospital(
-        updatedHospital.id,
-        updatedHospital
-      );
-      if (response.status === 202) {
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage(response.data.message);
-        fetchHospitalData();
-        setShowForm(false);
-      }
-    } catch (e: any) {
-      handleApiError(e);
-    }
   };
 
   const handleEdit = (hospital: HospitalData) => {
@@ -108,19 +50,23 @@ const Hospital = () => {
       >
         Hospital Information
       </Typography>
-      <Box display="grid" gridRow={4}>
+      <Box
+        display="grid"
+        gridTemplateColumns="repeat(3, 1fr)"
+        gap={2}
+        alignItems="center"
+      >
         {/* Displaying multiple hospitals */}
-
         {loading ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             Loading hospital data...
           </Typography>
-        ) : hospitalData.length === 0 ? (
+        ) : (hospitals ?? []).length === 0 ? (
           <Typography variant="body1" style={{ color: "#B0D9FF" }}>
             No hospitals found
           </Typography>
         ) : (
-          hospitalData.map((hospital, index) => (
+          (hospitals ?? []).map((hospital, index) => (
             <Box
               key={index}
               mb={4}
@@ -161,7 +107,7 @@ const Hospital = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={fetchHospitalData}
+          onClick={() => refetch()}
           style={{
             backgroundColor: "#7241FF",
             color: "#fff",
@@ -192,8 +138,11 @@ const Hospital = () => {
         {/* Create Hospital Form */}
         {showForm && (
           <CreateHospital
-            onAddHospital={currentHospital ? updateHospital : addHospital}
-            onClose={() => setShowForm(false)}
+            onClose={() => {
+              setShowForm(false);
+              refetch();
+              setCurrentHospital(null);
+            }}
             hospitalData={currentHospital}
           />
         )}
