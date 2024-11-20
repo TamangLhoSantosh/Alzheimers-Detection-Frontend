@@ -14,6 +14,7 @@ export interface UserData {
   password: String;
   is_admin: boolean;
   is_hospital_admin: boolean;
+  is_verified: boolean;
 }
 
 const useGetUser = (query: string = "") => {
