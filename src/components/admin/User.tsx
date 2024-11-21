@@ -1,13 +1,22 @@
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Modal,
+} from "@mui/material";
 import { useState } from "react";
 import useGetUser from "../../hooks/admin/useGetUser";
 import MessageComponent from "../generic/MessageComponent";
+import CreateAccount from "./CreateAccount";
 
 const User = () => {
   // State for managing the message component display
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+
+  const [showForm, setShowForm] = useState(false);
 
   // Fetch user data using custom hook
   const { data: users, isLoading, error, refetch } = useGetUser();
@@ -112,11 +121,13 @@ const User = () => {
         >
           Refresh Data
         </Button>
-
         {/* Add User Button Placeholder */}
         <Button
           variant="contained"
           color="primary"
+          onClick={() => {
+            setShowForm(true);
+          }}
           sx={{
             backgroundColor: "#03B0FD",
             color: "#fff",
@@ -127,7 +138,6 @@ const User = () => {
         >
           Add User
         </Button>
-
         {/* Display Message Component */}
         {showMessage && (
           <MessageComponent
@@ -136,6 +146,17 @@ const User = () => {
             onClose={closeMessage}
           />
         )}
+        {/* Display Create Account Component */}
+        <Modal open={showForm} onClose={() => setShowForm(false)}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            width="100%"
+            overflow="hidden"
+          >
+            <CreateAccount closeForm={() => setShowForm(false)} />
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );

@@ -1,4 +1,10 @@
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Modal,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import CreateHospital from "./CreateHospital";
 import MessageComponent from "../generic/MessageComponent";
@@ -160,16 +166,23 @@ const Hospital = () => {
         </Button>
 
         {/* Create Hospital Form */}
-        {showForm && (
-          <CreateHospital
-            onClose={() => {
-              setShowForm(false); // Close the form
-              refetch(); // Refresh the hospital list
-              setCurrentHospital(null); // Reset the selected hospital
-            }}
-            hospitalData={currentHospital} // Pass the selected hospital for editing
-          />
-        )}
+        <Modal open={showForm} onClose={() => setShowForm(false)}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            width="100%"
+            overflow="hidden"
+          >
+            <CreateHospital
+              onClose={() => {
+                setShowForm(false); // Close the form
+                refetch(); // Refresh the hospital list
+                setCurrentHospital(null); // Reset the selected hospital
+              }}
+              hospitalData={currentHospital} // Pass the selected hospital for editing
+            />
+          </Box>
+        </Modal>
 
         {/* Display feedback messages */}
         {showMessage && (

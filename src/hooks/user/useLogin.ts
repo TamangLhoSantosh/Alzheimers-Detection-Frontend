@@ -25,7 +25,7 @@ const useLogin = () => {
     }
   );
 
-  const login = (loginData: LoginaData) => {
+  const login = async (loginData: LoginaData) => {
     mutate(loginData, {
       onSuccess: (response) => {
         saveAuthTokens(response);

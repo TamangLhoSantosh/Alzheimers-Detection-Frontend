@@ -76,15 +76,11 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
   return (
     <Box
       display="flex"
-      height="100%"
-      width="100%"
-      position="fixed"
-      top={0}
-      left={0}
       justifyContent="center"
       alignItems="center"
-      bgcolor="rgba(0, 0, 0, 0.5)"
-      zIndex={20}
+      width="100%"
+      height="100vh"
+      overflow="hidden"
     >
       <Box
         component="form"

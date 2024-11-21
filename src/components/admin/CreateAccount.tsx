@@ -5,7 +5,13 @@ import useCreateUser, {
   CreateUserAccount,
 } from "../../hooks/admin/useCreateUser";
 
-const CreateAccount = () => {
+interface CreateAccountProps {
+  closeForm: () => void;
+}
+
+const CreateAccount = ({ closeForm }: CreateAccountProps) => {
+  const isAdmin = localStorage.getItem("is_admin");
+  const isHospitalAdmin = localStorage.getItem("is_hospital_admin");
   const [values, setValues] = useState<CreateUserAccount>({
     username: "",
     first_name: "",
@@ -18,7 +24,7 @@ const CreateAccount = () => {
     email: "",
     password: "",
     is_admin: false,
-    is_hospital_admin: false,
+    is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
   });
 
   const { isLoading, error, createUser } = useCreateUser();
@@ -52,6 +58,9 @@ const CreateAccount = () => {
       setShowMessage(true);
       setMessage("Account creation successful. Email is sent to the mail.");
       setTitle("Success");
+
+      // Close form after success
+      closeForm();
     }
   };
 
@@ -60,11 +69,9 @@ const CreateAccount = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      minHeight="100vh"
-      sx={{
-        background: "linear-gradient(to bottom, #02FBFF, #03B0FD)",
-        padding: "20px",
-      }}
+      width="100%"
+      height="100vh"
+      overflow="hidden"
     >
       {/* Loading State */}
       {isLoading && (
@@ -93,8 +100,13 @@ const CreateAccount = () => {
         borderRadius="16px"
         boxShadow={6}
         sx={{
-          boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)",
-          backdropFilter: "blur(10px)",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          "-ms-overflow-style": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
         }}
       >
         <Typography
@@ -111,7 +123,7 @@ const CreateAccount = () => {
           {/* Form fields with improved spacing */}
           <TextField
             label="First Name"
-            name="firstname"
+            name="first_name"
             placeholder="Enter First Name"
             fullWidth
             onChange={handleChange}
@@ -124,7 +136,7 @@ const CreateAccount = () => {
           />
           <TextField
             label="Middle Name"
-            name="middlename"
+            name="middle_name"
             placeholder="Enter Middle Name"
             fullWidth
             onChange={handleChange}
@@ -136,7 +148,7 @@ const CreateAccount = () => {
           />
           <TextField
             label="Last Name"
-            name="lastname"
+            name="last_name"
             placeholder="Enter Last Name"
             fullWidth
             onChange={handleChange}
@@ -249,7 +261,7 @@ const CreateAccount = () => {
               borderRadius: "8px",
             }}
           />
-          <Box display="flex" justifyContent="center" mt={3}>
+          <Box display="flex" justifyContent="center" gap={8} mt={3}>
             <Button
               type="submit"
               variant="contained"
@@ -267,6 +279,24 @@ const CreateAccount = () => {
               }}
             >
               Create Account
+            </Button>
+            <Button
+              onClick={closeForm}
+              variant="contained"
+              color="primary"
+              size="large"
+              sx={{
+                bgcolor: "#7241ff",
+                "&:hover": {
+                  bgcolor: "#03B0FD",
+                },
+                borderRadius: "8px",
+                padding: "12px 25px",
+                fontWeight: "bold",
+                transition: "all 0.3s ease-in-out",
+              }}
+            >
+              Cancel
             </Button>
           </Box>
         </Box>
