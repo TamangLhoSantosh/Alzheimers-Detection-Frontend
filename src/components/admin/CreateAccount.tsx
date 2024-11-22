@@ -1,33 +1,61 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
 import MessageComponent from "../generic/MessageComponent";
 import useCreateUser, {
   CreateUserAccount,
 } from "../../hooks/admin/useCreateUser";
+import { UserData } from "../../hooks/admin/useGetUser";
+import useUpdateUser from "../../hooks/admin/useUpdateUser";
 
 interface CreateAccountProps {
   closeForm: () => void;
+  userData: UserData | null; // null if creating new user
 }
 
-const CreateAccount = ({ closeForm }: CreateAccountProps) => {
+// Type guard to check if the object is of type UserData
+function isUserData(values: UserData | CreateUserAccount): values is UserData {
+  return (values as UserData).id !== undefined;
+}
+
+const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
   const isAdmin = localStorage.getItem("is_admin");
   const isHospitalAdmin = localStorage.getItem("is_hospital_admin");
-  const [values, setValues] = useState<CreateUserAccount>({
-    username: "",
-    first_name: "",
-    middle_name: "",
-    last_name: "",
-    dob: "",
-    gender: "",
-    contact: "",
-    address: "",
-    email: "",
-    password: "",
-    is_admin: false,
-    is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
-  });
+  const [values, setValues] = useState<UserData | CreateUserAccount>(
+    userData || {
+      username: "",
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      dob: "",
+      gender: "",
+      contact: "",
+      address: "",
+      email: "",
+      password: "",
+      is_admin: false,
+      is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
+    }
+  );
 
   const { isLoading, error, createUser } = useCreateUser();
+  const { updateUser } = useUpdateUser();
+
+  // // Set form data if userData is provided on component mount
+  useEffect(() => {
+    if (userData) {
+      console.log(userData);
+      const formattedDob = userData.dob
+        ? typeof userData.dob === "string"
+          ? new Date(userData.dob).toISOString().split("T")[0]
+          : ""
+        : "";
+      setValues({
+        ...userData,
+        dob: formattedDob, // Ensure dob is in the correct format
+      });
+    }
+    console.log(values);
+  }, [userData]);
 
   // Function to handle form input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +76,8 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
   // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createUser(values);
+    if (isUserData(values)) updateUser(values);
+    else createUser(values);
 
     if (error) {
       setShowMessage(true);
@@ -116,7 +145,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
           textAlign="center"
           gutterBottom
         >
-          Sign Up
+          {userData ? "Update User" : "Create Account"}
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} display="grid" gap={3}>
@@ -126,6 +155,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="first_name"
             placeholder="Enter First Name"
             fullWidth
+            value={values.first_name}
             onChange={handleChange}
             required
             variant="outlined"
@@ -139,6 +169,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="middle_name"
             placeholder="Enter Middle Name"
             fullWidth
+            value={values.middle_name}
             onChange={handleChange}
             variant="outlined"
             sx={{
@@ -151,6 +182,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="last_name"
             placeholder="Enter Last Name"
             fullWidth
+            value={values.last_name}
             onChange={handleChange}
             required
             variant="outlined"
@@ -164,6 +196,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="username"
             placeholder="Enter Username"
             fullWidth
+            value={values.username}
             onChange={handleChange}
             required
             variant="outlined"
@@ -177,6 +210,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="dob"
             type="date"
             InputLabelProps={{ shrink: true }}
+            value={values.dob}
             fullWidth
             onChange={handleChange}
             required
@@ -212,6 +246,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="contact"
             placeholder="Enter Contact No"
             fullWidth
+            value={values.contact}
             onChange={handleChange}
             required
             variant="outlined"
@@ -225,6 +260,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="address"
             placeholder="Enter Address"
             fullWidth
+            value={values.address}
             onChange={handleChange}
             required
             variant="outlined"
@@ -238,6 +274,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
             name="email"
             type="email"
             placeholder="Enter Email"
+            value={values.email}
             fullWidth
             onChange={handleChange}
             required
@@ -247,20 +284,23 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
               borderRadius: "8px",
             }}
           />
-          <TextField
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Enter Password"
-            fullWidth
-            onChange={handleChange}
-            required
-            variant="outlined"
-            sx={{
-              backgroundColor: "#f8f8f8",
-              borderRadius: "8px",
-            }}
-          />
+          {userData ? null : (
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter Password"
+              value={values.password}
+              fullWidth
+              onChange={handleChange}
+              required
+              variant="outlined"
+              sx={{
+                backgroundColor: "#f8f8f8",
+                borderRadius: "8px",
+              }}
+            />
+          )}
           <Box display="flex" justifyContent="center" gap={8} mt={3}>
             <Button
               type="submit"
@@ -278,7 +318,7 @@ const CreateAccount = ({ closeForm }: CreateAccountProps) => {
                 transition: "all 0.3s ease-in-out",
               }}
             >
-              Create Account
+              {userData ? "Update User" : "Create Account"}
             </Button>
             <Button
               onClick={closeForm}

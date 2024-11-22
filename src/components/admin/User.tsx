@@ -6,7 +6,7 @@ import {
   Modal,
 } from "@mui/material";
 import { useState } from "react";
-import useGetUser from "../../hooks/admin/useGetUser";
+import useGetUser, { UserData } from "../../hooks/admin/useGetUser";
 import MessageComponent from "../generic/MessageComponent";
 import CreateAccount from "./CreateAccount";
 
@@ -16,7 +16,10 @@ const User = () => {
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
+  // State to toggle the form visibility
   const [showForm, setShowForm] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 
   // Fetch user data using custom hook
   const { data: users, isLoading, error, refetch } = useGetUser();
@@ -33,6 +36,12 @@ const User = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
+  };
+
+  // Function to handle editing a user
+  const handleEdit = (user: UserData) => {
+    setCurrentUser(user); // Set the selected user for editing
+    setShowForm(true); // Open the form
   };
 
   return (
@@ -99,6 +108,14 @@ const User = () => {
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
                 Verified: {user.is_verified ? "Yes" : "No"}
               </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => handleEdit(user)} // Open the form to edit the selected user
+                sx={{ mt: 2 }}
+              >
+                Edit
+              </Button>
             </Box>
           ))
         )}
@@ -154,7 +171,13 @@ const User = () => {
             width="100%"
             overflow="hidden"
           >
-            <CreateAccount closeForm={() => setShowForm(false)} />
+            <CreateAccount
+              closeForm={() => {
+                setShowForm(false);
+                refetch();
+              }}
+              userData={currentUser}
+            />
           </Box>
         </Modal>
       </Box>
