@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./components/user/Login";
-import CreateAccount from "./components/admin/CreateAccount";
 import NavbarComponent from "./components/generic/NavbarComponent";
 import Hospital from "./components/admin/Hospital";
 import User from "./components/admin/User";
+import Patient from "./components/user/Patients";
 
 const AppRoutes = () => {
   return (
@@ -13,8 +13,8 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
         <Route path="/users" element={<User />} />
-        <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/hospitals" element={<Hospital />} />
+        <Route path="/patients" element={<Patient />} />
       </Routes>
     </BrowserRouter>
   );

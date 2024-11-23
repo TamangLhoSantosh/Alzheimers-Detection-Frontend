@@ -1,36 +1,22 @@
-import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-  Modal,
-} from "@mui/material";
-import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
-import useGetUser, { UserData } from "../../hooks/admin/useGetUser";
+import useGetPatient from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
-import CreateAccount from "./CreateAccount";
 
-const User = () => {
+const Patient = () => {
   // State for managing the message component display
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
-  // State to toggle the form visibility
-  const [showForm, setShowForm] = useState(false);
-
-  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
-
-  // Fetch users data
-  const { data: users, isLoading, error, refetch } = useGetUser();
+  // Fetch patients data
+  const { data: patients, isLoading, error, refetch } = useGetPatient();
 
   // Handle error and display message component
   if (error) {
     setShowMessage(true);
     setTitle("Error");
-    setMessage("Failed to fetch users. Please try again later.");
+    setMessage("Failed to fetch patients. Please try again later.");
   }
 
   // Function to close the message component
@@ -38,12 +24,6 @@ const User = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
-  };
-
-  // Function to handle editing a user
-  const handleEdit = (user: UserData) => {
-    setCurrentUser(user); // Set the selected user for editing
-    setShowForm(true); // Open the form
   };
 
   return (
@@ -55,10 +35,10 @@ const User = () => {
         p={10}
         sx={{ color: "#03B0FD" }}
       >
-        User Information
+        Patients
       </Typography>
 
-      {/* User List Section */}
+      {/* Patient List Section */}
       <Box
         display="grid"
         gridTemplateColumns="repeat(3, 1fr)"
@@ -76,14 +56,14 @@ const User = () => {
               }}
             />
           </Box>
-        ) : (users ?? []).length === 0 ? (
-          // No Users Found
+        ) : (patients ?? []).length === 0 ? (
+          // No Patients Found
           <Typography variant="body1" sx={{ color: "#B0D9FF" }}>
-            No users found
+            No patients found
           </Typography>
         ) : (
-          // Displaying Users
-          (users ?? []).map((user, index) => (
+          // Displaying Patients
+          (patients ?? []).map((patient, index) => (
             <Box
               key={index}
               mb={4}
@@ -96,38 +76,17 @@ const User = () => {
                 fontWeight="bold"
                 sx={{ color: "#03B0FD", display: "flex", alignItems: "center" }}
               >
-                {user.first_name} {user.middle_name} {user.last_name}
-                <Box
-                  sx={{ color: "red", display: "flex", alignItems: "center" }}
-                >
-                  {user.is_hospital_admin && <LocalHospitalIcon />}
-                </Box>
-                <Box
-                  sx={{ color: "blue", display: "flex", alignItems: "center" }}
-                >
-                  {user.is_admin && <AdminPanelSettingsIcon />}
-                </Box>
+                {patient.first_name} {patient.middle_name} {patient.last_name}
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
-                Contact: {user.contact || "N/A"}
+                Contact: {patient.contact || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#03B0FD" }}>
-                Email: {user.email}
+                Gender: {patient.gender || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
-                Gender: {user.gender || "N/A"}
+                Address: {patient.address}
               </Typography>
-              <Typography variant="body1" sx={{ color: "#03B0FD" }}>
-                Address: {user.address}
-              </Typography>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => handleEdit(user)} // Open the form to edit the selected user
-                sx={{ mt: 2 }}
-              >
-                Edit
-              </Button>
             </Box>
           ))
         )}
@@ -150,13 +109,11 @@ const User = () => {
         >
           Refresh Data
         </Button>
-        {/* Add User Button Placeholder */}
+        {/* Add Patient Button Placeholder */}
         <Button
           variant="contained"
           color="primary"
-          onClick={() => {
-            setShowForm(true);
-          }}
+          onClick={() => {}}
           sx={{
             backgroundColor: "#03B0FD",
             color: "#fff",
@@ -165,7 +122,7 @@ const User = () => {
             marginTop: "20px",
           }}
         >
-          Add User
+          Add Patient
         </Button>
         {/* Display Message Component */}
         {showMessage && (
@@ -175,27 +132,9 @@ const User = () => {
             onClose={closeMessage}
           />
         )}
-        {/* Display Create Account Component */}
-        <Modal open={showForm} onClose={() => setShowForm(false)}>
-          <Box
-            display="flex"
-            justifyContent="center"
-            width="100%"
-            overflow="hidden"
-          >
-            <CreateAccount
-              closeForm={() => {
-                setShowForm(false);
-                refetch();
-                setCurrentUser(null);
-              }}
-              userData={currentUser}
-            />
-          </Box>
-        </Modal>
       </Box>
     </Box>
   );
 };
 
-export default User;
+export default Patient;
