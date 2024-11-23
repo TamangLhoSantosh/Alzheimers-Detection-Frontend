@@ -1,13 +1,22 @@
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Modal,
+} from "@mui/material";
 import { useState } from "react";
 import useGetPatient from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
+import CreatePatient from "./CreatePatient";
 
 const Patient = () => {
   // State for managing the message component display
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+
+  const [showForm, setShowForm] = useState(false);
 
   // Fetch patients data
   const { data: patients, isLoading, error, refetch } = useGetPatient();
@@ -113,7 +122,9 @@ const Patient = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => {}}
+          onClick={() => {
+            setShowForm(true);
+          }}
           sx={{
             backgroundColor: "#03B0FD",
             color: "#fff",
@@ -132,6 +143,23 @@ const Patient = () => {
             onClose={closeMessage}
           />
         )}
+
+        {/* Create Hospital Form */}
+        <Modal open={showForm} onClose={() => setShowForm(false)}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            width="100%"
+            overflow="hidden"
+          >
+            <CreatePatient
+              onClose={() => {
+                setShowForm(false);
+                refetch();
+              }}
+            />
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );

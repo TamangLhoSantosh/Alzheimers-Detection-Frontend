@@ -19,6 +19,11 @@ export interface UserData {
 }
 
 const useGetUser = (query: string = "") => {
+  const is_admin = localStorage.getItem("is_admin");
+  if (is_admin === "false") {
+    const id = localStorage.getItem("hospital_id");
+    query = `hospital_id=${id}`;
+  }
   return useGetData<UserData[]>("/user", "users", query);
 };
 
