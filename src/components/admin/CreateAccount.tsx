@@ -6,6 +6,7 @@ import useCreateUser, {
 } from "../../hooks/admin/useCreateUser";
 import { UserData } from "../../hooks/admin/useGetUser";
 import useUpdateUser from "../../hooks/admin/useUpdateUser";
+import useGetHospitals from "../../hooks/admin/useGetHospitals";
 
 interface CreateAccountProps {
   closeForm: () => void;
@@ -34,11 +35,15 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
       password: "",
       is_admin: false,
       is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
+      hospital_id: "",
     }
   );
 
   const { isLoading, error, createUser } = useCreateUser();
   const { updateUser } = useUpdateUser();
+
+  // Fetch hosptial data
+  const { data: hospitals } = useGetHospitals();
 
   // // Set form data if userData is provided on component mount
   useEffect(() => {
@@ -242,6 +247,29 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
             <MenuItem value="other">Other</MenuItem>
           </TextField>
           <TextField
+            label="Hospital"
+            name="hospital_id"
+            select
+            fullWidth
+            value={values.hospital_id}
+            onChange={handleChange}
+            required
+            variant="outlined"
+            sx={{
+              backgroundColor: "#f8f8f8",
+              borderRadius: "8px",
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select Hospital
+            </MenuItem>
+            {hospitals?.map((hospital) => (
+              <MenuItem key={hospital.id} value={hospital.id}>
+                {hospital.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
             label="Contact Number"
             name="contact"
             placeholder="Enter Contact No"
@@ -308,32 +336,36 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
               color="primary"
               size="large"
               sx={{
-                bgcolor: "#7241ff",
-                "&:hover": {
-                  bgcolor: "#03B0FD",
-                },
-                borderRadius: "8px",
-                padding: "12px 25px",
+                padding: "12px 20px",
                 fontWeight: "bold",
-                transition: "all 0.3s ease-in-out",
+                fontSize: "16px",
+                borderRadius: "8px",
+                backgroundColor: "#03B0FD",
+                "&:hover": {
+                  backgroundColor: "#02FBFF",
+                  color: "black",
+                },
+                transition: "background-color 0.3s ease-in-out",
               }}
             >
               {userData ? "Update User" : "Create Account"}
             </Button>
             <Button
               onClick={closeForm}
-              variant="contained"
+              variant="outlined"
               color="primary"
               size="large"
               sx={{
-                bgcolor: "#7241ff",
-                "&:hover": {
-                  bgcolor: "#03B0FD",
-                },
-                borderRadius: "8px",
-                padding: "12px 25px",
+                padding: "12px 20px",
                 fontWeight: "bold",
-                transition: "all 0.3s ease-in-out",
+                fontSize: "16px",
+                borderRadius: "8px",
+                color: "#7241FF",
+                borderColor: "#7241FF",
+                "&:hover": {
+                  backgroundColor: "#e0e7ff",
+                },
+                transition: "background-color 0.3s ease-in-out",
               }}
             >
               Cancel

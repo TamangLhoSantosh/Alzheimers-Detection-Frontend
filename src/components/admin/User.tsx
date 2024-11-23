@@ -5,6 +5,8 @@ import {
   CircularProgress,
   Modal,
 } from "@mui/material";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { useState } from "react";
 import useGetUser, { UserData } from "../../hooks/admin/useGetUser";
 import MessageComponent from "../generic/MessageComponent";
@@ -21,7 +23,7 @@ const User = () => {
 
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 
-  // Fetch user data using custom hook
+  // Fetch users data
   const { data: users, isLoading, error, refetch } = useGetUser();
 
   // Handle error and display message component
@@ -92,21 +94,31 @@ const User = () => {
               <Typography
                 variant="h6"
                 fontWeight="bold"
-                sx={{ color: "#03B0FD" }}
+                sx={{ color: "#03B0FD", display: "flex", alignItems: "center" }}
               >
-                {user.username}
+                {user.first_name} {user.middle_name} {user.last_name}
+                <Box
+                  sx={{ color: "red", display: "flex", alignItems: "center" }}
+                >
+                  {user.is_hospital_admin && <LocalHospitalIcon />}
+                </Box>
+                <Box
+                  sx={{ color: "blue", display: "flex", alignItems: "center" }}
+                >
+                  {user.is_admin && <AdminPanelSettingsIcon />}
+                </Box>
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
-                Email: {user.email}
+                Contact: {user.contact || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#03B0FD" }}>
-                Contact: {user.contact || "N/A"}
+                Email: {user.email}
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
                 Gender: {user.gender || "N/A"}
               </Typography>
-              <Typography variant="body1" sx={{ color: "#7241FF" }}>
-                Verified: {user.is_verified ? "Yes" : "No"}
+              <Typography variant="body1" sx={{ color: "#03B0FD" }}>
+                Address: {user.address}
               </Typography>
               <Button
                 variant="outlined"

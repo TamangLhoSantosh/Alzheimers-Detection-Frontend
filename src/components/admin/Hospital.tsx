@@ -110,10 +110,10 @@ const Hospital = () => {
                 {hospital.name}
               </Typography>
               <Typography variant="body1" style={{ color: "#7241FF" }}>
-                Email: {hospital.email}
+                Contact: {hospital.contact}
               </Typography>
               <Typography variant="body1" style={{ color: "#03B0FD" }}>
-                Contact: {hospital.contact}
+                Email: {hospital.email}
               </Typography>
               <Typography variant="body1" style={{ color: "#7241FF" }}>
                 Address: {hospital.address}

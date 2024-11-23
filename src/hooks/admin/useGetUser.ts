@@ -15,6 +15,7 @@ export interface UserData {
   is_admin: boolean;
   is_hospital_admin: boolean;
   is_verified: boolean;
+  hospital_id: String;
 }
 
 const useGetUser = (query: string = "") => {
