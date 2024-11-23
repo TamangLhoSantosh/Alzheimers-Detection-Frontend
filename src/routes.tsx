@@ -3,6 +3,7 @@ import Login from "./components/user/Login";
 import CreateAccount from "./components/admin/CreateAccount";
 import NavbarComponent from "./components/generic/NavbarComponent";
 import Hospital from "./components/admin/Hospital";
+import User from "./components/admin/User";
 
 const AppRoutes = () => {
   return (
@@ -11,6 +12,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
+        <Route path="/users" element={<User />} />
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/hospitals" element={<Hospital />} />
       </Routes>

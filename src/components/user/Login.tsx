@@ -59,18 +59,18 @@ const Login = () => {
       return;
     }
 
-    login(values);
+    await login(values);
+
+    setMessageData({
+      message: "Login Successful",
+      title: "Success",
+      open: true,
+    });
 
     if (error) {
       setMessageData({
         message: error || "An error occurred",
         title: "Error",
-        open: true,
-      });
-    } else {
-      setMessageData({
-        message: "Login Successful",
-        title: "Success",
         open: true,
       });
     }

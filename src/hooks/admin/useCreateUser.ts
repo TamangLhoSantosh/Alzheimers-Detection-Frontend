@@ -15,6 +15,7 @@ export interface CreateUserAccount {
   password: String;
   is_admin: boolean;
   is_hospital_admin: boolean;
+  hospital_id: String;
 }
 
 interface CreateUserResult {
