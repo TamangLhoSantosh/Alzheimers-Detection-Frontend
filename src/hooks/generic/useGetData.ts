@@ -17,7 +17,7 @@ const useGetData = <T>(
       ? { Authorization: `Bearer ${authToken}` }
       : {};
 
-    const response = await apiClient.get<T>(`${endpoint}?search=${query}`, {
+    const response = await apiClient.get<T>(`${endpoint}?${query}`, {
       headers,
     });
 
