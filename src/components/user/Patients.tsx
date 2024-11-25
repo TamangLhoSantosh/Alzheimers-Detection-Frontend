@@ -6,7 +6,7 @@ import {
   Modal,
 } from "@mui/material";
 import { useState } from "react";
-import useGetPatient from "../../hooks/user/useGetPatients";
+import useGetPatient, { PatientData } from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
 import CreatePatient from "./CreatePatient";
 
@@ -17,6 +17,10 @@ const Patient = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   const [showForm, setShowForm] = useState(false);
+
+  const [currentPatient, setCurrentPatient] = useState<PatientData | null>(
+    null
+  );
 
   // Fetch patients data
   const { data: patients, isLoading, error, refetch } = useGetPatient();
@@ -33,6 +37,12 @@ const Patient = () => {
     setMessage("");
     setTitle("");
     setShowMessage(false);
+  };
+
+  // Function to handle editing a patient
+  const handleEdit = (patient: PatientData) => {
+    setCurrentPatient(patient); // Set the selected patient for editing
+    setShowForm(true); // Open the form
   };
 
   return (
@@ -96,6 +106,14 @@ const Patient = () => {
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
                 Address: {patient.address}
               </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => handleEdit(patient)} // Open the form to edit the selected user
+                sx={{ mt: 2 }}
+              >
+                Edit
+              </Button>
             </Box>
           ))
         )}
@@ -156,7 +174,9 @@ const Patient = () => {
               onClose={() => {
                 setShowForm(false);
                 refetch();
+                setCurrentPatient(null);
               }}
+              patientData={currentPatient}
             />
           </Box>
         </Modal>

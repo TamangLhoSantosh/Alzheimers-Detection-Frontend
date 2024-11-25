@@ -35,7 +35,7 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
       password: "",
       is_admin: false,
       is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
-      hospital_id: "",
+      hospital_id: localStorage.getItem("hospital_id") || "",
     }
   );
 
@@ -43,12 +43,17 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
   const { updateUser } = useUpdateUser();
 
   // Fetch hosptial data
-  const { data: hospitals } = useGetHospitals();
+  let hospitals = null;
+  const admin = localStorage.getItem("is_admin");
 
-  // // Set form data if userData is provided on component mount
+  if (admin === "true") {
+    const { data } = useGetHospitals(); // Destructure `data` from the hook
+    hospitals = data; // Assign the data to `hospitals`
+  }
+
+  // Set form data if userData is provided on component mount
   useEffect(() => {
     if (userData) {
-      console.log(userData);
       const formattedDob = userData.dob
         ? typeof userData.dob === "string"
           ? new Date(userData.dob).toISOString().split("T")[0]
@@ -59,7 +64,6 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
         dob: formattedDob, // Ensure dob is in the correct format
       });
     }
-    console.log(values);
   }, [userData]);
 
   // Function to handle form input change
@@ -137,7 +141,7 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
           maxHeight: "80vh",
           overflowY: "auto",
           scrollbarWidth: "none",
-          "-ms-overflow-style": "none",
+          msOverflowStyle: "none",
           "&::-webkit-scrollbar": {
             display: "none",
           },
@@ -246,29 +250,31 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
-          <TextField
-            label="Hospital"
-            name="hospital_id"
-            select
-            fullWidth
-            value={values.hospital_id}
-            onChange={handleChange}
-            required
-            variant="outlined"
-            sx={{
-              backgroundColor: "#f8f8f8",
-              borderRadius: "8px",
-            }}
-          >
-            <MenuItem value="" disabled>
-              Select Hospital
-            </MenuItem>
-            {hospitals?.map((hospital) => (
-              <MenuItem key={hospital.id} value={hospital.id}>
-                {hospital.name}
+          {admin === "true" && (
+            <TextField
+              label="Hospital"
+              name="hospital_id"
+              select
+              fullWidth
+              value={values.hospital_id}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              sx={{
+                backgroundColor: "#f8f8f8",
+                borderRadius: "8px",
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select Hospital
               </MenuItem>
-            ))}
-          </TextField>
+              {hospitals?.map((hospital) => (
+                <MenuItem key={hospital.id} value={hospital.id}>
+                  {hospital.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <TextField
             label="Contact Number"
             name="contact"

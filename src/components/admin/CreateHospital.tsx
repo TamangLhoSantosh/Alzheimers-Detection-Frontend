@@ -48,7 +48,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
     try {
       if (hospitalData) {
         // Update hospital
-        await updateHospital({ ...hospitalData, ...formData });
+        updateHospital({ ...hospitalData, ...formData });
         setShowMessage(true);
         setTitle("Success");
         setMessage("Hospital updated successfully!");
