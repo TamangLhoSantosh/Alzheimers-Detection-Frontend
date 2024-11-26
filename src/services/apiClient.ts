@@ -29,9 +29,9 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log(error);
     if (error.response.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refresh");
+      localStorage.clear();
       window.location.replace("/login");
     }
     return Promise.reject(error);
