@@ -10,3 +10,30 @@ const apiClient = axios.create({
 });
 
 export default apiClient;
+
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.log(error);
+    if (error.response.status === 401) {
+      localStorage.clear();
+      window.location.replace("/login");
+    }
+    return Promise.reject(error);
+  }
+);

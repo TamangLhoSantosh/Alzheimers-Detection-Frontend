@@ -53,6 +53,7 @@ const saveAuthTokens = (data: any) => {
   localStorage.setItem("user", JSON.stringify(data.user));
   localStorage.setItem("is_admin", String(data.is_admin));
   localStorage.setItem("is_hospital_admin", String(data.is_hospital_admin));
+  localStorage.setItem("hospital_id", String(data.hospital_id));
 };
 
 export default useLogin;
