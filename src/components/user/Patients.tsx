@@ -39,6 +39,12 @@ const Patient = () => {
     setShowMessage(false);
   };
 
+  // Function to handle clicking on a patient
+  const handleClick = (patient: PatientData) => {
+    localStorage.setItem("patient_id", patient.id.toString());
+    window.location.href = "/tests";
+  };
+
   // Function to handle editing a patient
   const handleEdit = (patient: PatientData) => {
     setCurrentPatient(patient); // Set the selected patient for editing
@@ -89,6 +95,7 @@ const Patient = () => {
               p={2}
               borderRadius="8px"
               boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+              onClick={() => handleClick(patient)}
             >
               <Typography
                 variant="h6"

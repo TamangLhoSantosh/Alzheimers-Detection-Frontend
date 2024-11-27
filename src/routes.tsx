@@ -4,6 +4,7 @@ import NavbarComponent from "./components/generic/NavbarComponent";
 import Hospital from "./components/admin/Hospital";
 import User from "./components/admin/User";
 import Patient from "./components/user/Patients";
+import Test from "./components/user/Test";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/users" element={<User />} />
         <Route path="/hospitals" element={<Hospital />} />
         <Route path="/patients" element={<Patient />} />
+        <Route path="/tests" element={<Test />} />
       </Routes>
     </BrowserRouter>
   );
