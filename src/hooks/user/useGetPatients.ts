@@ -14,6 +14,10 @@ export interface PatientData {
 }
 
 const useGetPatient = (query: string = "") => {
+  const is_Admin = localStorage.getItem("is_admin");
+  if (is_Admin === "true") {
+    return useGetData<PatientData[]>("/patient", "patients", query);
+  }
   const id = localStorage.getItem("hospital_id");
   return useGetData<PatientData[]>(
     `/hospital/${id}/patient`,
