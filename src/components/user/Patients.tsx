@@ -6,11 +6,14 @@ import {
   Modal,
 } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useGetPatient, { PatientData } from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
 import CreatePatient from "./CreatePatient";
 
 const Patient = () => {
+  const navigate = useNavigate();
+
   // State for managing the message component display
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
@@ -41,8 +44,7 @@ const Patient = () => {
 
   // Function to handle clicking on a patient
   const handleClick = (patient: PatientData) => {
-    localStorage.setItem("patient_id", patient.id.toString());
-    window.location.href = "/tests";
+    navigate(`/patient/tests/${patient.id}`);
   };
 
   // Function to handle editing a patient
@@ -96,6 +98,7 @@ const Patient = () => {
               borderRadius="8px"
               boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
               onClick={() => handleClick(patient)}
+              style={{ cursor: "pointer" }}
             >
               <Typography
                 variant="h6"

@@ -7,11 +7,17 @@ export interface TestData {
   result: string;
 }
 
-const useGetTest = (query: string = "") => {
+const useGetTest = (
+  patient_id: string | undefined,
+  test_id: string | undefined,
+  query: string = ""
+) => {
   const id = localStorage.getItem("hospital_id");
-  const patient_id = localStorage.getItem("patient_id");
+
   return useGetData<TestData[]>(
-    `/hospital/${id}/patient/${patient_id}/test`,
+    test_id
+      ? `/hospital/${id}/patient/${patient_id}/test/${test_id}`
+      : `/hospital/${id}/patient/${patient_id}/test`,
     "tests",
     query
   );
