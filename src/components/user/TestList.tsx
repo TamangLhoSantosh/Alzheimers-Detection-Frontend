@@ -4,14 +4,19 @@ import {
   Button,
   CircularProgress,
   Snackbar,
+  Modal,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetTest from "../../hooks/user/useGetTest";
+import { useState } from "react";
+import CreateTest from "./CreateTest";
 
 const TestList = () => {
   const { patientId } = useParams();
   const { data: tests, isLoading, error, refetch } = useGetTest(patientId, "");
   const navigate = useNavigate();
+
+  const [showForm, setShowForm] = useState(false);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" p={3}>
@@ -87,6 +92,19 @@ const TestList = () => {
         <Button
           variant="contained"
           color="primary"
+          onClick={() => setShowForm(true)}
+          sx={{
+            backgroundColor: "#03B0FD",
+            color: "#fff",
+            padding: "10px 20px",
+            borderRadius: "5px",
+          }}
+        >
+          Create Test
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
           onClick={() => refetch()}
           sx={{
             backgroundColor: "#7241FF",
@@ -98,6 +116,23 @@ const TestList = () => {
           Refetch
         </Button>
       </Box>
+
+      {/* Create Test Form */}
+      <Modal open={showForm} onClose={() => setShowForm(false)}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          width="100%"
+          overflow="hidden"
+        >
+          <CreateTest
+            onClose={() => {
+              setShowForm(false);
+              refetch();
+            }}
+          />
+        </Box>
+      </Modal>
     </Box>
   );
 };

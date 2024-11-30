@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 
 export interface CreateTestData {
   description: string;
-  patient_id: number;
 }
 
 interface CreateTestResponse {
@@ -13,11 +12,9 @@ interface CreateTestResponse {
   createTest: (testData: CreateTestData) => void;
 }
 
-const useCreateTest = (
-  hospital_id: string | undefined,
-  patient_id: string | undefined
-): CreateTestResponse => {
+const useCreateTest = (patient_id: string | undefined): CreateTestResponse => {
   const queryClient = useQueryClient();
+  const hospital_id = localStorage.getItem("hospital_id");
   const { mutate, isLoading, error } = usePostData<void>(
     `/hospital/${hospital_id}/patient/${patient_id}/test`
   );
