@@ -6,14 +6,15 @@ import {
   Snackbar,
   Modal,
 } from "@mui/material";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetTest from "../../hooks/user/useGetTest";
-import { useState } from "react";
 import CreateTest from "./CreateTest";
 
 const TestList = () => {
   const { patientId } = useParams();
   const { data: tests, isLoading, error, refetch } = useGetTest(patientId, "");
+
   const navigate = useNavigate();
 
   const [showForm, setShowForm] = useState(false);
@@ -55,6 +56,8 @@ const TestList = () => {
               p={2}
               borderRadius="8px"
               boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+              onClick={() => navigate(`/patient/tests/${patientId}/${test.id}`)}
+              style={{ cursor: "pointer" }}
             >
               <Typography
                 variant="h6"
