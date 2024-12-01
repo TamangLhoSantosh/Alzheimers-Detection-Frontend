@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import usePostData from "../generic/usePostData";
 import { AxiosError } from "axios";
+import { useAuth } from "../../components/generic/authCotext";
 
 export interface CreatePatientData {
   first_name: String;
@@ -21,9 +22,9 @@ interface CreatePatientResponse {
 
 const useCreatePatient = (): CreatePatientResponse => {
   const queryClient = useQueryClient();
-  const id = localStorage.getItem("hospital_id");
+  const { user } = useAuth();
   const { mutate, isLoading, error } = usePostData<void>(
-    `/hospital/${id}/patient`
+    `/hospital/${user?.hospital_id}/patient`
   );
 
   const createPatient = (patientData: CreatePatientData) => {

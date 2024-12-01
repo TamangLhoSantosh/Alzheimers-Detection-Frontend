@@ -1,3 +1,4 @@
+import { useAuth } from "../../components/generic/authCotext";
 import useGetData from "../generic/useGetData";
 
 export interface UserData {
@@ -19,9 +20,9 @@ export interface UserData {
 }
 
 const useGetUser = (query: string = "") => {
-  const is_admin = localStorage.getItem("is_admin");
-  if (is_admin === "false") {
-    const id = localStorage.getItem("hospital_id");
+  const { user } = useAuth();
+  if (user?.is_admin === false) {
+    const id = user?.hospital_id;
     query = `hospital_id=${id}`;
   }
   return useGetData<UserData[]>("/user", "users", query);

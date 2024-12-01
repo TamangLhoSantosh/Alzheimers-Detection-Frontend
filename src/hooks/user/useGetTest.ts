@@ -1,3 +1,4 @@
+import { useAuth } from "../../components/generic/authCotext";
 import useGetData from "../generic/useGetData";
 
 export interface TestData {
@@ -12,12 +13,12 @@ const useGetTest = (
   test_id: string | undefined,
   query: string = ""
 ) => {
-  const id = localStorage.getItem("hospital_id");
+  const { user } = useAuth();
 
   return useGetData<TestData[]>(
     test_id
-      ? `/hospital/${id}/patient/${patient_id}/test/${test_id}`
-      : `/hospital/${id}/patient/${patient_id}/test`,
+      ? `/hospital/${user?.hospital_id}/patient/${patient_id}/test/${test_id}`
+      : `/hospital/${user?.hospital_id}/patient/${patient_id}/test`,
     "tests",
     query
   );
