@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface User {
   id: number;
@@ -35,6 +35,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = (accessToken: string, refreshToken: string, userData: User) => {
     localStorage.setItem("token", accessToken);
     localStorage.setItem("refresh", refreshToken);
+    localStorage.setItem("user", JSON.stringify(userData));
     setIsAuthenticated(true);
     setUser(userData);
   };

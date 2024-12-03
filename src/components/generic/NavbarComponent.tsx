@@ -1,7 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useAuth } from "./authCotext";
 
 const NavbarComponent = () => {
+  const { isAuthenticated, user } = useAuth();
   return (
     <Box
       position="sticky"
@@ -23,55 +25,64 @@ const NavbarComponent = () => {
           </Typography>
         </Link>
       </Box>
-      <Box
-        gridColumn="2"
-        display="flex"
-        justifyContent="space-evenly"
-        gap="30px"
-      >
-        <Link
-          to="/hospitals"
-          style={{ textDecoration: "none", color: "inherit" }}
+      {isAuthenticated && (
+        <Box
+          gridColumn="2"
+          display="flex"
+          justifyContent="space-evenly"
+          gap="30px"
         >
-          <Typography
-            sx={{
-              color: "#7241ff",
-              "&:hover": {
-                color: "#03B0FD",
-              },
-            }}
+          {user?.is_admin && (
+            <Link
+              to="/hospitals"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Hospitals
+              </Typography>
+            </Link>
+          )}
+          {user?.is_hospital_admin && (
+            <Link
+              to="/users"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Users
+              </Typography>
+            </Link>
+          )}
+          <Link
+            to="/patients"
+            style={{ textDecoration: "none", color: "inherit" }}
           >
-            Hospitals
-          </Typography>
-        </Link>
-        <Link to="/users" style={{ textDecoration: "none", color: "inherit" }}>
-          <Typography
-            sx={{
-              color: "#7241ff",
-              "&:hover": {
-                color: "#03B0FD",
-              },
-            }}
-          >
-            Users
-          </Typography>
-        </Link>
-        <Link
-          to="/patients"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Typography
-            sx={{
-              color: "#7241ff",
-              "&:hover": {
-                color: "#03B0FD",
-              },
-            }}
-          >
-            Patients
-          </Typography>
-        </Link>
-      </Box>
+            <Typography
+              sx={{
+                color: "#7241ff",
+                "&:hover": {
+                  color: "#03B0FD",
+                },
+              }}
+            >
+              Patients
+            </Typography>
+          </Link>
+        </Box>
+      )}
     </Box>
   );
 };
