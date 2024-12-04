@@ -1,9 +1,29 @@
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  IconButton,
+  Button,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp"; // Import the logout icon
 import { useAuth } from "./authCotext";
 
 const NavbarComponent = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth(); // Assuming you have a logout function in your auth context
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleLogout = () => {
+    logout(); // Assuming this function handles logging the user out
+    handleCloseModal(); // Close the modal on logout
+  };
+
   return (
     <Box
       position="sticky"
@@ -30,6 +50,7 @@ const NavbarComponent = () => {
           gridColumn="2"
           display="flex"
           justifyContent="space-evenly"
+          alignItems="center"
           gap="30px"
         >
           {user?.is_admin && (
@@ -81,8 +102,42 @@ const NavbarComponent = () => {
               Patients
             </Typography>
           </Link>
+
+          {/* Circular button for logout modal */}
+          <IconButton
+            onClick={handleOpenModal}
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "#7241ff",
+              color: "white",
+              "&:hover": {
+                bgcolor: "#03B0FD",
+              },
+            }}
+          >
+            <ExitToAppIcon />
+          </IconButton>
         </Box>
       )}
+
+      {/* Modal for Logout */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogContent>
+          <Typography variant="h6">
+            Are you sure you want to log out?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleLogout} color="primary">
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

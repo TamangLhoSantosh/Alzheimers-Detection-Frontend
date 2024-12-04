@@ -23,7 +23,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute requireAuth={false}>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
         {/* Protected Routes */}
         <Route
           path="/users"
