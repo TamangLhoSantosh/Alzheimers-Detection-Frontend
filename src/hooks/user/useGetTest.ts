@@ -1,4 +1,4 @@
-import { useAuth } from "../../components/generic/authCotext";
+import { useAuth } from "../../components/generic/authContext";
 import useGetData from "../generic/useGetData";
 
 export interface TestData {

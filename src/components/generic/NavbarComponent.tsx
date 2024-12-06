@@ -9,19 +9,19 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp"; // Import the logout icon
-import { useAuth } from "./authCotext";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useAuth } from "./authContext";
 
 const NavbarComponent = () => {
-  const { isAuthenticated, user, logout } = useAuth(); // Assuming you have a logout function in your auth context
+  const { isAuthenticated, user, logout } = useAuth();
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
   const handleLogout = () => {
-    logout(); // Assuming this function handles logging the user out
-    handleCloseModal(); // Close the modal on logout
+    logout();
+    handleCloseModal();
   };
 
   return (
@@ -70,7 +70,7 @@ const NavbarComponent = () => {
               </Typography>
             </Link>
           )}
-          {user?.is_hospital_admin && (
+          {(user?.is_admin || user?.is_hospital_admin) && (
             <Link
               to="/users"
               style={{ textDecoration: "none", color: "inherit" }}
@@ -124,16 +124,36 @@ const NavbarComponent = () => {
 
       {/* Modal for Logout */}
       <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogContent>
-          <Typography variant="h6">
+        <DialogContent style={{ textAlign: "center", padding: "20px" }}>
+          <Typography variant="h5" gutterBottom>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ fontWeight: "bold" }}
+              sx={{
+                color: "#7241FF",
+                padding: "20px 30px",
+                borderRadius: "5px",
+                marginTop: "20px",
+              }}
+            >
+              Log Out Confirmation
+            </Typography>
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
             Are you sure you want to log out?
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+        <DialogActions style={{ justifyContent: "center", padding: "20px" }}>
+          <Button
+            onClick={handleCloseModal}
+            color="secondary"
+            variant="outlined"
+            style={{ marginRight: "10px" }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleLogout} color="primary">
+          <Button onClick={handleLogout} color="primary" variant="contained">
             Logout
           </Button>
         </DialogActions>

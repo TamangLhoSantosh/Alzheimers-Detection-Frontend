@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -6,6 +6,7 @@ import {
   Typography,
   IconButton,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import MessageComponent from "../generic/MessageComponent";
@@ -59,14 +60,11 @@ const Login = () => {
       return;
     }
 
-    await login(values);
+    // Pass setMessageData function to login function to show success or error
+    await login(values, setMessageData);
+  };
 
-    setMessageData({
-      message: "Login Successful",
-      title: "Success",
-      open: true,
-    });
-
+  useEffect(() => {
     if (error) {
       setMessageData({
         message: error || "An error occurred",
@@ -74,7 +72,7 @@ const Login = () => {
         open: true,
       });
     }
-  };
+  }, [error]);
 
   return (
     <Box
@@ -101,9 +99,7 @@ const Login = () => {
             padding: "20px",
           }}
         >
-          <Typography variant="h4" fontWeight="bold" color="white">
-            Loading...
-          </Typography>
+          <CircularProgress color="secondary" />
         </Box>
       )}
 
@@ -197,7 +193,7 @@ const Login = () => {
         </Box>
       </Box>
 
-      {/* Message Component */}
+      {/* Message Component for Success/Failure */}
       {messageData.open && (
         <MessageComponent
           message={messageData.message}

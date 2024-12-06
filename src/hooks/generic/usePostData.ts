@@ -42,7 +42,7 @@ const usePostData = <T>(
 
   return {
     data: data || null,
-    error: error?.message || null,
+    error: (error?.response?.data as { detail: string })?.detail || null,
     isLoading,
     mutate,
   };

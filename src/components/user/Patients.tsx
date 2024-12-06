@@ -10,8 +10,10 @@ import { useNavigate } from "react-router-dom";
 import useGetPatient, { PatientData } from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
 import CreatePatient from "./CreatePatient";
+import { useAuth } from "../generic/authContext";
 
 const Patient = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // State for managing the message component display
@@ -97,8 +99,10 @@ const Patient = () => {
               p={2}
               borderRadius="8px"
               boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-              onClick={() => handleClick(patient)}
-              style={{ cursor: "pointer" }}
+              onClick={user?.is_admin ? undefined : () => handleClick(patient)}
+              style={{
+                cursor: user?.is_admin ? "" : "pointer",
+              }}
             >
               <Typography
                 variant="h6"
@@ -121,6 +125,7 @@ const Patient = () => {
                 color="primary"
                 onClick={() => handleEdit(patient)} // Open the form to edit the selected user
                 sx={{ mt: 2 }}
+                disabled={user?.is_admin}
               >
                 Edit
               </Button>
@@ -134,7 +139,6 @@ const Patient = () => {
         {/* Refresh Data Button */}
         <Button
           variant="contained"
-          color="primary"
           onClick={() => refetch()}
           sx={{
             backgroundColor: "#7241FF",
@@ -160,6 +164,7 @@ const Patient = () => {
             borderRadius: "5px",
             marginTop: "20px",
           }}
+          disabled={user?.is_admin}
         >
           Add Patient
         </Button>

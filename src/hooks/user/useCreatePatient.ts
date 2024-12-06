@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import usePostData from "../generic/usePostData";
 import { AxiosError } from "axios";
-import { useAuth } from "../../components/generic/authCotext";
+import { useAuth } from "../../components/generic/authContext";
 
 export interface CreatePatientData {
   first_name: String;
