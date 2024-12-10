@@ -123,7 +123,7 @@ const Login = () => {
             label="Username"
             name="username"
             type="text"
-            placeholder="Enter your username"
+            placeholder="Enter your email"
             fullWidth
             onChange={handleChange}
             required

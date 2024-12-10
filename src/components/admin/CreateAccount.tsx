@@ -1,5 +1,13 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import MessageComponent from "../generic/MessageComponent";
 import useCreateUser, {
   CreateUserAccount,
@@ -7,6 +15,7 @@ import useCreateUser, {
 import { UserData } from "../../hooks/admin/useGetUser";
 import useUpdateUser from "../../hooks/admin/useUpdateUser";
 import useGetHospitals from "../../hooks/admin/useGetHospitals";
+import { useAuth } from "../generic/authContext";
 
 interface CreateAccountProps {
   closeForm: () => void;
@@ -19,8 +28,7 @@ function isUserData(values: UserData | CreateUserAccount): values is UserData {
 }
 
 const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
-  const isAdmin = localStorage.getItem("is_admin");
-  const isHospitalAdmin = localStorage.getItem("is_hospital_admin");
+  const { user } = useAuth();
   const [values, setValues] = useState<UserData | CreateUserAccount>(
     userData || {
       username: "",
@@ -34,8 +42,8 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
       email: "",
       password: "",
       is_admin: false,
-      is_hospital_admin: isAdmin ? true : isHospitalAdmin ? true : false,
-      hospital_id: localStorage.getItem("hospital_id") || "",
+      is_hospital_admin: false,
+      hospital_id: user?.hospital_id || "",
     }
   );
 
@@ -44,9 +52,8 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
 
   // Fetch hosptial data
   let hospitals = null;
-  const admin = localStorage.getItem("is_admin");
 
-  if (admin === "true") {
+  if (user?.is_admin) {
     const { data } = useGetHospitals(); // Destructure `data` from the hook
     hospitals = data; // Assign the data to `hospitals`
   }
@@ -68,7 +75,13 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
 
   // Function to handle form input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    // Check if the field is a checkbox (for boolean values like is_hospital_admin)
+    if (type === "checkbox") {
+      setValues({ ...values, [name]: checked });
+    } else {
+      setValues({ ...values, [name]: value });
+    }
   };
 
   const [message, setMessage] = useState("");
@@ -250,7 +263,7 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="other">Other</MenuItem>
           </TextField>
-          {admin === "true" && (
+          {user?.is_admin && (
             <TextField
               label="Hospital"
               name="hospital_id"
@@ -318,6 +331,24 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
               borderRadius: "8px",
             }}
           />
+          {user?.is_admin && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.is_hospital_admin}
+                  onChange={handleChange}
+                  name="is_hospital_admin"
+                  color="primary"
+                />
+              }
+              label="Hospital Admin"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  color: "#333",
+                },
+              }}
+            />
+          )}
           {userData ? null : (
             <TextField
               label="Password"

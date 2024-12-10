@@ -123,7 +123,10 @@ const Patient = () => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleEdit(patient)} // Open the form to edit the selected user
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent click propagation to parent Box
+                  handleEdit(patient); // Open the form to edit the selected user
+                }}
                 sx={{ mt: 2 }}
                 disabled={user?.is_admin}
               >
