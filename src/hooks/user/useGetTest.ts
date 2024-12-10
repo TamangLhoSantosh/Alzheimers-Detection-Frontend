@@ -3,9 +3,15 @@ import useGetData from "../generic/useGetData";
 
 export interface TestData {
   id: number;
-  patient_id: number;
   description: string;
   result: string;
+  test_images?: [
+    {
+      image_url: string;
+      patient_id: number;
+      id: number;
+    }
+  ];
 }
 
 const useGetTest = (
@@ -15,7 +21,7 @@ const useGetTest = (
 ) => {
   const { user } = useAuth();
 
-  return useGetData<TestData[]>(
+  return useGetData<TestData | TestData[]>(
     test_id
       ? `/hospital/${user?.hospital_id}/patient/${patient_id}/test/${test_id}`
       : `/hospital/${user?.hospital_id}/patient/${patient_id}/test`,

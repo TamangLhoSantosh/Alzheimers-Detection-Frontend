@@ -7,6 +7,13 @@ const Test = () => {
   const { patientId, testId } = useParams();
   const { data: test } = useGetTest(patientId, testId);
 
+  // Check if 'test' is an array or a single object
+  const isArray = Array.isArray(test);
+  const singleTest = isArray ? null : test; // Handle single test case
+
+  // If test is an array and testId is present, show the first element
+  const displayTest = isArray ? test[0] : singleTest;
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" p={3}>
       <Typography
@@ -18,7 +25,7 @@ const Test = () => {
       </Typography>
 
       {/* Show test details */}
-      {test && (
+      {displayTest && (
         <Box
           display="flex"
           flexDirection="column"
@@ -37,11 +44,22 @@ const Test = () => {
             Test Details
           </Typography>
           <Typography variant="body1">
-            <strong>Description:</strong> {test.description || "N/A"}
+            <strong>Description:</strong> {displayTest.description || "N/A"}
           </Typography>
           <Typography variant="body1">
-            <strong>Result:</strong> {test.result || "Pending"}
+            <strong>Result:</strong> {displayTest.result || "Pending"}
           </Typography>
+
+          {/* Display Image if available */}
+          {displayTest?.test_images?.[0]?.image_url && (
+            <Box mt={2}>
+              <img
+                src={`http://localhost:8000/${displayTest.test_images[0].image_url}`}
+                alt={`Test Result for ${testId}`}
+                style={{ maxWidth: "100%", borderRadius: "10px" }}
+              />
+            </Box>
+          )}
         </Box>
       )}
 

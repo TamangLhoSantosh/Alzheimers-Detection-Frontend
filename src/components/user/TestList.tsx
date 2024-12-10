@@ -45,12 +45,12 @@ const TestList = () => {
           </Box>
         ) : error ? (
           <Snackbar open={!!error} message={error} autoHideDuration={3000} />
-        ) : (tests ?? []).length === 0 ? (
+        ) : Array.isArray(tests) && tests.length === 0 ? (
           <Typography variant="body1" sx={{ color: "#B0D9FF" }}>
             No tests available for this patient.
           </Typography>
-        ) : (
-          (tests ?? []).map((test, index) => (
+        ) : Array.isArray(tests) ? (
+          tests.map((test, index) => (
             <Box
               key={index}
               p={2}
@@ -74,7 +74,7 @@ const TestList = () => {
               </Typography>
             </Box>
           ))
-        )}
+        ) : null}
       </Box>
 
       {/* Actions Section */}
