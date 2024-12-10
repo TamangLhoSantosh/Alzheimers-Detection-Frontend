@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Typography, Button, Input } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -10,9 +10,8 @@ const Test = () => {
   const { patientId, testId } = useParams();
   const [image, setImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploaded, setIsUploaded] = useState(false);
 
-  const { data: test, refetch } = useGetTest(patientId, testId);
+  const { data: test } = useGetTest(patientId, testId);
 
   const { isLoading, error, uploadImage } = useUploadImage({
     patient_id: patientId,
@@ -42,7 +41,6 @@ const Test = () => {
     }
 
     uploadImage({ image: selectedFile });
-    setIsUploaded(true);
   };
 
   return (

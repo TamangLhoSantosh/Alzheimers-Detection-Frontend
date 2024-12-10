@@ -23,8 +23,8 @@ const CreateTest = ({ onClose }: CreateTestProps) => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(patientId);
     createTest(testData);
+    onClose();
   };
 
   return (

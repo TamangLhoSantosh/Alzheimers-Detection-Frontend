@@ -131,7 +131,6 @@ const TestList = () => {
           <CreateTest
             onClose={() => {
               setShowForm(false);
-              refetch();
             }}
           />
         </Box>
