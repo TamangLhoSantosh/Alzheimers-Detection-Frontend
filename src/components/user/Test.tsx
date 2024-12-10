@@ -1,11 +1,23 @@
-import { Box, Typography, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Typography, Button, Input } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+
 import useGetTest from "../../hooks/user/useGetTest";
+import useUploadImage from "../../hooks/user/useUploadImage";
 
 const Test = () => {
   const navigate = useNavigate();
   const { patientId, testId } = useParams();
-  const { data: test } = useGetTest(patientId, testId);
+  const [image, setImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploaded, setIsUploaded] = useState(false);
+
+  const { data: test, refetch } = useGetTest(patientId, testId);
+
+  const { isLoading, error, uploadImage } = useUploadImage({
+    patient_id: patientId,
+    test_id: testId,
+  });
 
   // Check if 'test' is an array or a single object
   const isArray = Array.isArray(test);
@@ -13,6 +25,25 @@ const Test = () => {
 
   // If test is an array and testId is present, show the first element
   const displayTest = isArray ? test[0] : singleTest;
+
+  // Handle file change
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+      setSelectedFile(file);
+    }
+  };
+
+  // Handle the image upload using the hook
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      return;
+    }
+
+    uploadImage({ image: selectedFile });
+    setIsUploaded(true);
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" p={3}>
@@ -60,9 +91,31 @@ const Test = () => {
               />
             </Box>
           )}
+
+          {/* File upload input */}
+          {!displayTest?.test_images?.[0]?.image_url && (
+            <Input
+              type="file"
+              inputProps={{ accept: "image/*" }}
+              onChange={handleFileChange}
+            />
+          )}
         </Box>
       )}
 
+      {/* Image Preview */}
+      {image && (
+        <Box mt={2}>
+          <Typography variant="body1">Image Preview:</Typography>
+          <img
+            src={image}
+            alt="Preview"
+            style={{ width: "200px", marginTop: "10px" }}
+          />
+        </Box>
+      )}
+
+      {/* Buttons */}
       <Box mt={4} display="flex" gap={3}>
         <Button
           variant="contained"
@@ -85,10 +138,18 @@ const Test = () => {
             padding: "10px 20px",
             borderRadius: "5px",
           }}
+          onClick={handleUpload}
+          disabled={!!displayTest?.test_images?.[0]?.image_url}
         >
-          Upload Image
+          {isLoading ? "Uploading..." : "Upload"}
         </Button>
       </Box>
+      {/* Error Handling */}
+      {error && (
+        <Typography color="error" mt={2}>
+          {error || "Failed to upload the image"}
+        </Typography>
+      )}
     </Box>
   );
 };
