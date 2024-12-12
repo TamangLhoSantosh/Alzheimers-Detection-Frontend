@@ -1,3 +1,4 @@
+import { useAuth } from "../../components/generic/authContext";
 import useGetData from "../generic/useGetData";
 
 export interface PatientData {
@@ -14,9 +15,12 @@ export interface PatientData {
 }
 
 const useGetPatient = (query: string = "") => {
-  const id = localStorage.getItem("hospital_id");
+  const { user } = useAuth();
+  if (user?.is_admin) {
+    return useGetData<PatientData[]>("/patient", "patients", query);
+  }
   return useGetData<PatientData[]>(
-    `/hospital/${id}/patient`,
+    `/hospital/${user?.hospital_id}/patient`,
     "patients",
     query
   );

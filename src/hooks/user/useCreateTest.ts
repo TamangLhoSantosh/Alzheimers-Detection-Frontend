@@ -3,32 +3,25 @@ import usePostData from "../generic/usePostData";
 import { AxiosError } from "axios";
 import { useAuth } from "../../components/generic/authContext";
 
-export interface CreatePatientData {
-  first_name: String;
-  middle_name: String;
-  last_name: String;
-  dob: String;
-  gender: String;
-  contact: String;
-  address: String;
-  hospital_id: String;
+export interface CreateTestData {
+  description: string;
 }
 
-interface CreatePatientResponse {
+interface CreateTestResponse {
   isLoading: boolean;
   error: string | null;
-  createPatient: (patientData: CreatePatientData) => void;
+  createTest: (testData: CreateTestData) => void;
 }
 
-const useCreatePatient = (): CreatePatientResponse => {
+const useCreateTest = (patient_id: string | undefined): CreateTestResponse => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { mutate, isLoading, error } = usePostData<void>(
-    `/hospital/${user?.hospital_id}/patient`
+    `/hospital/${user?.hospital_id}/patient/${patient_id}/test`
   );
 
-  const createPatient = (patientData: CreatePatientData) => {
-    mutate(patientData, {
+  const createTest = (testData: CreateTestData) => {
+    mutate(testData, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["patients"],
@@ -51,8 +44,8 @@ const useCreatePatient = (): CreatePatientResponse => {
   return {
     isLoading,
     error,
-    createPatient,
+    createTest,
   };
 };
 
-export default useCreatePatient;
+export default useCreateTest;

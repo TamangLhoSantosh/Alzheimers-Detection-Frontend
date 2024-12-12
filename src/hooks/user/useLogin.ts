@@ -1,3 +1,4 @@
+import { useAuth } from "../../components/generic/authContext";
 import usePostData from "../generic/usePostData";
 import { AxiosError } from "axios";
 
@@ -6,31 +7,29 @@ export interface LoginaData {
   password: string;
 }
 
-interface LoginResponse {
-  status: number;
-  data: {
-    access_token: string;
-    refresh_token: string;
-    user: object;
-    is_admin: boolean;
-    is_hospital_admin: boolean;
-  };
-}
-
 const useLogin = () => {
-  const { mutate, isLoading, error } = usePostData<LoginResponse>(
+  const { login: auth } = useAuth();
+  const { mutate, isLoading, error } = usePostData<Record<string, any>>(
     "/auth/login",
     {
       "Content-Type": "multipart/form-data",
     }
   );
 
-  const login = async (loginData: LoginaData) => {
+  // Login function with success and error handling
+  const login = async (loginData: LoginaData, setMessageData: Function) => {
     mutate(loginData, {
       onSuccess: (response) => {
-        saveAuthTokens(response);
+        // Trigger success message
+        setMessageData({
+          message: "Login successful!",
+          title: "Success",
+          open: true,
+        });
+        auth(response.access_token, response.refresh_token, response.user);
       },
       onError: (err) => {
+        // Trigger error message
         const errorMessage =
           err instanceof AxiosError
             ? err.response?.data || err.message
@@ -45,15 +44,6 @@ const useLogin = () => {
     error: error || null,
     login,
   };
-};
-
-const saveAuthTokens = (data: any) => {
-  localStorage.setItem("token", data.access_token);
-  localStorage.setItem("refresh", data.refresh_token);
-  localStorage.setItem("user", JSON.stringify(data.user));
-  localStorage.setItem("is_admin", String(data.is_admin));
-  localStorage.setItem("is_hospital_admin", String(data.is_hospital_admin));
-  localStorage.setItem("hospital_id", String(data.hospital_id));
 };
 
 export default useLogin;

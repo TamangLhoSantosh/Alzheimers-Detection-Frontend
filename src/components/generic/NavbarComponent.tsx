@@ -1,7 +1,29 @@
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  IconButton,
+  Button,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useAuth } from "./authContext";
 
 const NavbarComponent = () => {
+  const { isAuthenticated, user, logout } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleLogout = () => {
+    logout();
+    handleCloseModal();
+  };
+
   return (
     <Box
       position="sticky"
@@ -23,55 +45,119 @@ const NavbarComponent = () => {
           </Typography>
         </Link>
       </Box>
-      <Box
-        gridColumn="2"
-        display="flex"
-        justifyContent="space-evenly"
-        gap="30px"
-      >
-        <Link
-          to="/hospitals"
-          style={{ textDecoration: "none", color: "inherit" }}
+      {isAuthenticated && (
+        <Box
+          gridColumn="2"
+          display="flex"
+          justifyContent="space-evenly"
+          alignItems="center"
+          gap="30px"
         >
-          <Typography
+          {user?.is_admin && (
+            <Link
+              to="/hospitals"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Hospitals
+              </Typography>
+            </Link>
+          )}
+          {(user?.is_admin || user?.is_hospital_admin) && (
+            <Link
+              to="/users"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Users
+              </Typography>
+            </Link>
+          )}
+          <Link
+            to="/patients"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Typography
+              sx={{
+                color: "#7241ff",
+                "&:hover": {
+                  color: "#03B0FD",
+                },
+              }}
+            >
+              Patients
+            </Typography>
+          </Link>
+
+          {/* Circular button for logout modal */}
+          <IconButton
+            onClick={handleOpenModal}
             sx={{
-              color: "#7241ff",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "#7241ff",
+              color: "white",
               "&:hover": {
-                color: "#03B0FD",
+                bgcolor: "#03B0FD",
               },
             }}
           >
-            Hospitals
+            <ExitToAppIcon />
+          </IconButton>
+        </Box>
+      )}
+
+      {/* Modal for Logout */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogContent style={{ textAlign: "center", padding: "20px" }}>
+          <Typography variant="h5" gutterBottom>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ fontWeight: "bold" }}
+              sx={{
+                color: "#7241FF",
+                padding: "20px 30px",
+                borderRadius: "5px",
+                marginTop: "20px",
+              }}
+            >
+              Log Out Confirmation
+            </Typography>
           </Typography>
-        </Link>
-        <Link to="/users" style={{ textDecoration: "none", color: "inherit" }}>
-          <Typography
-            sx={{
-              color: "#7241ff",
-              "&:hover": {
-                color: "#03B0FD",
-              },
-            }}
+          <Typography variant="body1" color="textSecondary">
+            Are you sure you want to log out?
+          </Typography>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: "center", padding: "20px" }}>
+          <Button
+            onClick={handleCloseModal}
+            color="secondary"
+            variant="outlined"
+            style={{ marginRight: "10px" }}
           >
-            Users
-          </Typography>
-        </Link>
-        <Link
-          to="/patients"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Typography
-            sx={{
-              color: "#7241ff",
-              "&:hover": {
-                color: "#03B0FD",
-              },
-            }}
-          >
-            Patients
-          </Typography>
-        </Link>
-      </Box>
+            Cancel
+          </Button>
+          <Button onClick={handleLogout} color="primary" variant="contained">
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
