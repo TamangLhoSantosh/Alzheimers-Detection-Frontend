@@ -8,13 +8,14 @@ import TestList from "./components/user/TestList";
 import Test from "./components/user/Test";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./components/generic/NotFound";
+import NotAuthorized from "./components/generic/NotAuthorized";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <NavbarComponent />
       <Routes>
-        {/* Public Route */}
+        {/* Public Routes */}
         <Route
           path="/login"
           element={
@@ -31,27 +32,38 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        {/* Protected Routes */}
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <User />
-            </ProtectedRoute>
-          }
-        />
+        {/* Admin-only Routes */}
         <Route
           path="/hospitals"
           element={
-            <ProtectedRoute requireAuth={true}>
+            <ProtectedRoute requireAuth={true} allowAdmin={true}>
               <Hospital />
             </ProtectedRoute>
           }
         />
+        {/* Admin and Hospital Admin Routes */}
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute
+              requireAuth={true}
+              allowAdmin={true}
+              allowHospitalAdmin={true}
+            >
+              <User />
+            </ProtectedRoute>
+          }
+        />
+        {/* Authenticated User Routes */}
         <Route
           path="/patients"
           element={
-            <ProtectedRoute requireAuth={true}>
+            <ProtectedRoute
+              requireAuth={true}
+              allowNormalUser={true}
+              allowAdmin={true} // Admins can also access this
+              allowHospitalAdmin={true} // Hospital Admins can also access this
+            >
               <Patient />
             </ProtectedRoute>
           }
@@ -59,7 +71,7 @@ const AppRoutes = () => {
         <Route
           path="/patient/tests/:patientId"
           element={
-            <ProtectedRoute requireAuth={true}>
+            <ProtectedRoute requireAuth={true} allowNormalUser={true}>
               <TestList />
             </ProtectedRoute>
           }
@@ -67,11 +79,16 @@ const AppRoutes = () => {
         <Route
           path="/patient/tests/:patientId/:testId"
           element={
-            <ProtectedRoute requireAuth={true}>
+            <ProtectedRoute requireAuth={true} allowNormalUser={true}>
               <Test />
             </ProtectedRoute>
           }
         />
+
+        {/* Not Authorized Route */}
+        <Route path="/not-authorized" element={<NotAuthorized />} />
+
+        {/* Catch-all Route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
