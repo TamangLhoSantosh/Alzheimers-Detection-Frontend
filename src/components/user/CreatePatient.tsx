@@ -5,6 +5,8 @@ import useCreatePatient, {
 } from "../../hooks/user/useCreatePatient";
 import { PatientData } from "../../hooks/user/useGetPatients";
 import useUpdatePatient from "../../hooks/user/useUpdatePatient";
+import { useAuth } from "../generic/authContext";
+import MessageComponent from "../generic/MessageComponent";
 
 // Props Interface
 interface CreatePatientProps {
@@ -13,8 +15,8 @@ interface CreatePatientProps {
 }
 
 const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
-  // Retrieve hospital_id from localStorage
-  const hospitalId = localStorage.getItem("hospital_id") || "";
+  const { user } = useAuth();
+  const hospitalId = user?.hospital_id || "";
 
   // State for form data
   const [formData, setFormData] = useState<CreatePatientData>({
@@ -43,13 +45,35 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
     }));
   };
 
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  // Function to close message
+  const onclose = () => {
+    setMessage("");
+    setTitle("");
+    setShowMessage(false);
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (patientData) updatePatient({ ...patientData, ...formData });
       else createPatient(formData);
-      onClose(); // Close the form modal on success
+      if (error) {
+        setShowMessage(true);
+        setMessage(error || "An error occurred");
+        setTitle("Error");
+      } else {
+        setShowMessage(true);
+        setMessage("Patient creation successful.");
+        setTitle("Success");
+
+        // Close form after success
+        onClose();
+      }
     } catch (err) {
       console.error("Error creating/updating patient:", err);
     }
@@ -192,6 +216,9 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
           </Typography>
         )}
       </Box>
+      {showMessage && (
+        <MessageComponent message={message} title={title} onClose={onclose} />
+      )}
     </Box>
   );
 };
