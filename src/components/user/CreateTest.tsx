@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import useCreateTest, { CreateTestData } from "../../hooks/user/useCreateTest";
 import { useParams } from "react-router-dom";
+import MessageComponent from "../generic/MessageComponent";
 
 // Props Interface
 interface CreateTestProps {
   onClose: () => void;
 }
 
-const CreateTest = ({ onClose }: CreateTestProps) => {
+const CreateTest = ({ onClose: closeForm }: CreateTestProps) => {
   const { patientId } = useParams();
 
   // Local state for form fields and UI behavior
@@ -18,13 +19,32 @@ const CreateTest = ({ onClose }: CreateTestProps) => {
   });
 
   // Custom hook for creating a test
-  const { createTest } = useCreateTest(patientId);
+  const { createTest, error } = useCreateTest(patientId);
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
+  // Function to close message
+  const onclose = () => {
+    setMessage("");
+    setTitle("");
+    setShowMessage(false);
+  };
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     createTest(testData);
-    onClose();
+    if (error) {
+      setShowMessage(true);
+      setMessage(error || "An error occurred");
+      setTitle("Error");
+    } else {
+      setShowMessage(true);
+      setMessage("Test created successful.");
+      setTitle("Success");
+
+      closeForm();
+    }
   };
 
   return (
@@ -87,13 +107,16 @@ const CreateTest = ({ onClose }: CreateTestProps) => {
             variant="outlined"
             color="secondary"
             fullWidth
-            onClick={onClose}
+            onClick={closeForm}
             sx={{ fontWeight: "bold" }}
           >
             Cancel
           </Button>
         </Box>
       </Box>
+      {showMessage && (
+        <MessageComponent message={message} title={title} onClose={onclose} />
+      )}
     </Box>
   );
 };
