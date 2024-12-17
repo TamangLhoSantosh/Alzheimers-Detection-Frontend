@@ -26,9 +26,15 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
   const { createHospital, isLoading: creating } = usePostHospital();
   const { updateHospital, isLoading: updating } = useUpdateHospital();
 
-  const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
 
   // Set form data if hospitalData is provided on component mount
   useEffect(() => {
@@ -45,34 +51,21 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      if (hospitalData) {
-        // Update hospital
-        updateHospital({ ...hospitalData, ...formData });
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage("Hospital updated successfully!");
-      } else {
-        // Create hospital
-        createHospital(formData as CreateHospitalData);
-        setShowMessage(true);
-        setTitle("Success");
-        setMessage("Hospital added successfully!");
-      }
-      onClose();
-    } catch (error: any) {
-      setShowMessage(true);
-      setTitle("Error");
-      setMessage(error.response?.data?.detail || "An error occurred.");
+    if (hospitalData) {
+      // Update hospital
+      updateHospital({ ...hospitalData, ...formData });
+    } else {
+      // Create hospital
+      createHospital(formData as CreateHospitalData, setMessageData);
     }
   };
 
   const closeMessage = () => {
-    setMessage("");
-    setTitle("");
-    setShowMessage(false);
+    if (messageData.title === "Success") {
+      onClose();
+    }
+    setMessageData({ open: false, title: "", message: "" });
   };
-
   return (
     <Box
       display="flex"
@@ -223,10 +216,10 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
           </Button>
         </Box>
       </Box>
-      {showMessage && (
+      {messageData.open && (
         <MessageComponent
-          title={title}
-          message={message}
+          title={messageData.title}
+          message={messageData.message}
           onClose={closeMessage}
         />
       )}
