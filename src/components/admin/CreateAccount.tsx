@@ -47,7 +47,7 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
     }
   );
 
-  const { isLoading, error, createUser } = useCreateUser();
+  const { isLoading, createUser } = useCreateUser();
   const { updateUser } = useUpdateUser();
 
   // Fetch hosptial data
@@ -84,35 +84,30 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
     }
   };
 
-  const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
 
   // Function to close message
   const onclose = () => {
-    setMessage("");
-    setTitle("");
-    setShowMessage(false);
+    if (messageData.title === "Success") {
+      // Close form after success
+      closeForm();
+    }
+    setMessageData({ open: false, title: "", message: "" });
   };
 
   // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isUserData(values)) updateUser(values);
-    else createUser(values);
-
-    if (error) {
-      setShowMessage(true);
-      setMessage(error || "An error occurred");
-      setTitle("Error");
-    } else {
-      setShowMessage(true);
-      setMessage("Account creation successful. Email is sent to the mail.");
-      setTitle("Success");
-
-      // Close form after success
-      closeForm();
-    }
+    else createUser(values, setMessageData);
   };
 
   return (
@@ -411,8 +406,12 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
         </Box>
       </Box>
 
-      {showMessage && (
-        <MessageComponent message={message} title={title} onClose={onclose} />
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={onclose}
+        />
       )}
     </Box>
   );

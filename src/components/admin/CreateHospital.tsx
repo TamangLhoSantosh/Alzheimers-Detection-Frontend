@@ -66,6 +66,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
     }
     setMessageData({ open: false, title: "", message: "" });
   };
+
   return (
     <Box
       display="flex"
