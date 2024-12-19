@@ -34,7 +34,7 @@ const useCreateHospital = (): CreateHospitalResult => {
         });
         // Trigger success message
         setMessageData({
-          message: "Hospital cr successful!",
+          message: "Hospital creation successful!",
           title: "Success",
           open: true,
         });

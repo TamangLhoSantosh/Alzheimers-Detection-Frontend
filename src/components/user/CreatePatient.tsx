@@ -31,7 +31,7 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
   });
 
   // Extract functions and state from useCreatePatient hook
-  const { createPatient, error, isLoading } = useCreatePatient();
+  const { createPatient, isLoading } = useCreatePatient();
 
   // Extract functionsand state from useUpdatePatient hook
   const { updatePatient } = useUpdatePatient();
@@ -45,15 +45,22 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
     }));
   };
 
-  const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
 
   // Function to close message
-  const onclose = () => {
-    setMessage("");
-    setTitle("");
-    setShowMessage(false);
+  const closeMessage = () => {
+    if (messageData.title === "Success") {
+      onClose();
+    }
+    setMessageData({ open: false, title: "", message: "" });
   };
 
   // Handle form submission
@@ -61,19 +68,7 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
     e.preventDefault();
     try {
       if (patientData) updatePatient({ ...patientData, ...formData });
-      else createPatient(formData);
-      if (error) {
-        setShowMessage(true);
-        setMessage(error || "An error occurred");
-        setTitle("Error");
-      } else {
-        setShowMessage(true);
-        setMessage("Patient creation successful.");
-        setTitle("Success");
-
-        // Close form after success
-        onClose();
-      }
+      else createPatient(formData, setMessageData);
     } catch (err) {
       console.error("Error creating/updating patient:", err);
     }
@@ -208,16 +203,13 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
             Cancel
           </Button>
         </Box>
-
-        {/* Display error if any */}
-        {error && (
-          <Typography color="error" variant="body2" textAlign="center">
-            {error || "An error occurred."}
-          </Typography>
-        )}
       </Box>
-      {showMessage && (
-        <MessageComponent message={message} title={title} onClose={onclose} />
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={closeMessage}
+        />
       )}
     </Box>
   );

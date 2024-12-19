@@ -40,7 +40,7 @@ const useCreateUser = (): CreateUserResult => {
         });
         // Trigger success message
         setMessageData({
-          message: "Hospital cr successful!",
+          message: "User creation successful!",
           title: "Success",
           open: true,
         });
