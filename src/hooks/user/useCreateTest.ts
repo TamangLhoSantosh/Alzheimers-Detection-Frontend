@@ -10,7 +10,7 @@ export interface CreateTestData {
 interface CreateTestResponse {
   isLoading: boolean;
   error: string | null;
-  createTest: (testData: CreateTestData) => void;
+  createTest: (testData: CreateTestData, setMessageData: Function) => void;
 }
 
 const useCreateTest = (patient_id: string | undefined): CreateTestResponse => {
@@ -20,22 +20,35 @@ const useCreateTest = (patient_id: string | undefined): CreateTestResponse => {
     `/hospital/${user?.hospital_id}/patient/${patient_id}/test`
   );
 
-  const createTest = (testData: CreateTestData) => {
+  const createTest = (testData: CreateTestData, setMessageData: Function) => {
     mutate(testData, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["patients"],
           exact: false,
         });
+        // Trigger success message
+        setMessageData({
+          message: "Test created successful!",
+          title: "Success",
+          open: true,
+        });
       },
       onError: (err) => {
         if (err instanceof AxiosError) {
-          console.error(
-            "Error creating patients:",
-            err.response?.data || err.message
-          );
+          setMessageData({
+            message:
+              (err.response?.data as { detail?: string })?.detail ||
+              err.message,
+            title: "Error",
+            open: true,
+          });
         } else {
-          console.error("Unexpected error:", err);
+          setMessageData({
+            message: "An error occurred",
+            title: "Error",
+            open: true,
+          });
         }
       },
     });

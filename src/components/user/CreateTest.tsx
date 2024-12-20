@@ -9,7 +9,7 @@ interface CreateTestProps {
   onClose: () => void;
 }
 
-const CreateTest = ({ onClose: closeForm }: CreateTestProps) => {
+const CreateTest = ({ onClose }: CreateTestProps) => {
   const { patientId } = useParams();
 
   // Local state for form fields and UI behavior
@@ -19,32 +19,29 @@ const CreateTest = ({ onClose: closeForm }: CreateTestProps) => {
   });
 
   // Custom hook for creating a test
-  const { createTest, error } = useCreateTest(patientId);
-  const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+  const { createTest } = useCreateTest(patientId);
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
 
   // Function to close message
-  const onclose = () => {
-    setMessage("");
-    setTitle("");
-    setShowMessage(false);
+  const closeMessage = () => {
+    if (messageData.title === "Success") {
+      onClose();
+    }
+    setMessageData({ open: false, title: "", message: "" });
   };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    createTest(testData);
-    if (error) {
-      setShowMessage(true);
-      setMessage(error || "An error occurred");
-      setTitle("Error");
-    } else {
-      setShowMessage(true);
-      setMessage("Test created successful.");
-      setTitle("Success");
-
-      closeForm();
-    }
+    createTest(testData, setMessageData);
   };
 
   return (
@@ -107,15 +104,19 @@ const CreateTest = ({ onClose: closeForm }: CreateTestProps) => {
             variant="outlined"
             color="secondary"
             fullWidth
-            onClick={closeForm}
+            onClick={onClose}
             sx={{ fontWeight: "bold" }}
           >
             Cancel
           </Button>
         </Box>
       </Box>
-      {showMessage && (
-        <MessageComponent message={message} title={title} onClose={onclose} />
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={closeMessage}
+        />
       )}
     </Box>
   );
