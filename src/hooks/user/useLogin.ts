@@ -17,7 +17,11 @@ const useLogin = () => {
   );
 
   // Login function with success and error handling
-  const login = async (loginData: LoginaData, setMessageData: Function) => {
+  const login = async (
+    loginData: LoginaData,
+    setMessageData: Function,
+    rememberMe: Boolean
+  ) => {
     mutate(loginData, {
       onSuccess: (response) => {
         // Trigger success message
@@ -26,15 +30,27 @@ const useLogin = () => {
           title: "Success",
           open: true,
         });
-        auth(response.access_token, response.refresh_token, response.user);
+        if (rememberMe)
+          auth(response.access_token, response.user, response.refresh_token);
+        else auth(response.access_token, response.user);
       },
       onError: (err) => {
         // Trigger error message
-        const errorMessage =
-          err instanceof AxiosError
-            ? err.response?.data || err.message
-            : "Unexpected error occurred.";
-        console.error("Error during login:", errorMessage);
+        if (err instanceof AxiosError) {
+          setMessageData({
+            message:
+              (err.response?.data as { detail?: string })?.detail ||
+              err.message,
+            title: "Error",
+            open: true,
+          });
+        } else {
+          setMessageData({
+            message: "An error occurred",
+            title: "Error",
+            open: true,
+          });
+        }
       },
     });
   };

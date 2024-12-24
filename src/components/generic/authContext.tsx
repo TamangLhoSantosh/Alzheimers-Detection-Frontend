@@ -14,7 +14,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  login: (accessToken: string, refreshToken: string, user: User) => void;
+  login: (accessToken: string, user: User, refreshToken?: string) => void;
   logout: () => void;
 }
 
@@ -32,10 +32,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return userString ? JSON.parse(userString) : null;
   });
 
-  const login = (accessToken: string, refreshToken: string, userData: User) => {
+  const login = (
+    accessToken: string,
+    userData: User,
+    refreshToken?: string
+  ) => {
     localStorage.setItem("token", accessToken);
-    localStorage.setItem("refresh", refreshToken);
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("refresh", refreshToken ? refreshToken : "");
     setIsAuthenticated(true);
     setUser(userData);
   };
