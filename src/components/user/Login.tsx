@@ -13,6 +13,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import MessageComponent from "../generic/MessageComponent";
 import useLogin, { LoginaData } from "../../hooks/user/useLogin";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [values, setValues] = useState<LoginaData>({
@@ -182,16 +183,36 @@ const Login = () => {
             }}
           />
 
-          {/* Remember Me Checkbox */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={rememberMe}
-                onChange={handleRememberMeChange}
-              />
-            }
-            label="Remember Me"
-          />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {/* Remember Me Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                />
+              }
+              label="Remember Me"
+            />
+
+            {/* Forgot Password Link */}
+            <Link to="/forgot-password" style={{ textDecoration: "none" }}>
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Forgot Password?
+              </Typography>
+            </Link>
+          </Box>
 
           {/* Login Button */}
           <Box display="flex" justifyContent="center">

@@ -9,6 +9,7 @@ import Test from "./components/user/Test";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./components/generic/NotFound";
 import NotAuthorized from "./components/generic/NotAuthorized";
+import ForgotPassword from "./components/generic/ForgotPassword";
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute requireAuth={false}>
               <Login />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <ProtectedRoute requireAuth={false}>
+              <ForgotPassword />
             </ProtectedRoute>
           }
         />
