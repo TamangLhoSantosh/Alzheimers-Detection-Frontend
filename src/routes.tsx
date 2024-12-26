@@ -9,7 +9,8 @@ import Test from "./components/user/Test";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./components/generic/NotFound";
 import NotAuthorized from "./components/generic/NotAuthorized";
-import ForgotPassword from "./components/generic/ForgotPassword";
+import ForgotPasswordRequest from "./components/generic/ForgotPasswordRequest";
+import ForgotPasswordConfirm from "./components/generic/ForgotPasswordConfirm";
 
 const AppRoutes = () => {
   return (
@@ -37,7 +38,15 @@ const AppRoutes = () => {
           path="/forgot-password"
           element={
             <ProtectedRoute requireAuth={false}>
-              <ForgotPassword />
+              <ForgotPasswordRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/password-reset/confirm/:token"
+          element={
+            <ProtectedRoute requireAuth={false}>
+              <ForgotPasswordConfirm />
             </ProtectedRoute>
           }
         />

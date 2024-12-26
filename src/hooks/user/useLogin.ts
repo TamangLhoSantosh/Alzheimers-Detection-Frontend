@@ -26,7 +26,7 @@ const useLogin = () => {
       onSuccess: (response) => {
         // Trigger success message
         setMessageData({
-          message: "Login successful!",
+          message: response.message ?? "Login successful!",
           title: "Success",
           open: true,
         });

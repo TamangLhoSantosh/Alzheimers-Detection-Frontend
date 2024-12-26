@@ -26,7 +26,7 @@ interface CreatePatientResponse {
 const useCreatePatient = (): CreatePatientResponse => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { mutate, isLoading, error } = usePostData<void>(
+  const { mutate, isLoading, error } = usePostData<Record<string, any>>(
     `/hospital/${user?.hospital_id}/patient`
   );
 
@@ -35,14 +35,14 @@ const useCreatePatient = (): CreatePatientResponse => {
     setMessageData: Function
   ) => {
     mutate(patientData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["patients"],
           exact: false,
         });
         // Trigger success message
         setMessageData({
-          message: "Patient creation successful!",
+          message: response.message ?? "Patient creation successful!",
           title: "Success",
           open: true,
         });

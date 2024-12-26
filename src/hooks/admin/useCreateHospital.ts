@@ -20,21 +20,23 @@ interface CreateHospitalResult {
 
 const useCreateHospital = (): CreateHospitalResult => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = usePostData<void>("/hospital");
+
+  const { mutate, isLoading, error } =
+    usePostData<Record<string, any>>("/hospital");
 
   const createHospital = (
     hospitalData: CreateHospitalData,
     setMessageData: Function
   ) => {
     mutate(hospitalData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["hospitals"],
           exact: false,
         });
         // Trigger success message
         setMessageData({
-          message: "Hospital creation successful!",
+          message: response.message ?? "Hospital creation successful!",
           title: "Success",
           open: true,
         });

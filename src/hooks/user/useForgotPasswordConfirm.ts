@@ -1,19 +1,23 @@
 import usePostData from "../generic/usePostData";
 import { AxiosError } from "axios";
 
-const useForgotPassword = () => {
-  const { mutate, isLoading, error } = usePostData<void>(
-    "/password-reset/request"
+const useForgotPasswordConfirm = (token: String) => {
+  const { mutate, isLoading, error } = usePostData<Record<string, any>>(
+    "/password-reset/confirm?token=" + token
   );
 
-  const forgotPassword = (email: String, setMessageData: Function) => {
+  const forgotPasswordConfirm = (
+    password: String,
+    setMessageData: Function
+  ) => {
     mutate(
-      { email: email },
+      { new_password: password },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           // Trigger success message
+
           setMessageData({
-            message: "A password reset link has been sent to your email.",
+            message: response.message ?? "Password reset successful",
             title: "Success",
             open: true,
           });
@@ -42,8 +46,8 @@ const useForgotPassword = () => {
   return {
     isLoading,
     error,
-    forgotPassword,
+    forgotPasswordConfirm,
   };
 };
 
-export default useForgotPassword;
+export default useForgotPasswordConfirm;

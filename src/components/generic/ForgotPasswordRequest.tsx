@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
-import MessageComponent from "../generic/MessageComponent";
-import useForgotPassword from "../../hooks/user/useForgotPassword";
+import MessageComponent from "./MessageComponent";
+import useForgotPasswordRequest from "../../hooks/user/useForgotPasswordRequest";
 
-const ForgotPassword = () => {
-  const { isLoading, forgotPassword } = useForgotPassword();
+const ForgotPasswordRequest = () => {
+  const { isLoading, forgotPasswordRequest } = useForgotPasswordRequest();
   const [email, setEmail] = useState("");
   const [messageData, setMessageData] = useState<{
     message: string;
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
     if (!validateEmail(email)) {
       return;
     }
-    forgotPassword(email, setMessageData);
+    forgotPasswordRequest(email, setMessageData);
   };
 
   const closeMessage = () =>
@@ -120,4 +120,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordRequest;

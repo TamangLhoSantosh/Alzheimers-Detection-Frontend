@@ -16,20 +16,20 @@ interface CreateTestResponse {
 const useCreateTest = (patient_id: string | undefined): CreateTestResponse => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { mutate, isLoading, error } = usePostData<void>(
+  const { mutate, isLoading, error } = usePostData<Record<string, any>>(
     `/hospital/${user?.hospital_id}/patient/${patient_id}/test`
   );
 
   const createTest = (testData: CreateTestData, setMessageData: Function) => {
     mutate(testData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["patients"],
           exact: false,
         });
         // Trigger success message
         setMessageData({
-          message: "Test created successful!",
+          message: response.message ?? "Test created successful!",
           title: "Success",
           open: true,
         });

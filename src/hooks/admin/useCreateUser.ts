@@ -26,21 +26,23 @@ interface CreateUserResult {
 
 const useCreateUser = (): CreateUserResult => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = usePostData<void>("/user");
+
+  const { mutate, isLoading, error } =
+    usePostData<Record<string, any>>("/user");
 
   const createUser = (
     userData: CreateUserAccount,
     setMessageData: Function
   ) => {
     mutate(userData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["users"],
           exact: false,
         });
         // Trigger success message
         setMessageData({
-          message: "User creation successful!",
+          message: response.message ?? "User creation successful!",
           title: "Success",
           open: true,
         });
