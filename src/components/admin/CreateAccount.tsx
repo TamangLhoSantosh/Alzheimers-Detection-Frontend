@@ -106,7 +106,7 @@ const CreateAccount = ({ closeForm, userData }: CreateAccountProps) => {
   // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isUserData(values)) updateUser(values);
+    if (isUserData(values)) updateUser(values, setMessageData);
     else createUser(values, setMessageData);
   };
 

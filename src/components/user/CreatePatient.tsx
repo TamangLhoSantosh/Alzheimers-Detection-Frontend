@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import useCreatePatient, {
   CreatePatientData,
 } from "../../hooks/user/useCreatePatient";
@@ -159,11 +159,24 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
         <TextField
           label="Gender"
           name="gender"
+          select
+          fullWidth
           value={formData.gender}
           onChange={handleChange}
-          fullWidth
           required
-        />
+          variant="outlined"
+          sx={{
+            backgroundColor: "#f8f8f8",
+            borderRadius: "8px",
+          }}
+        >
+          <MenuItem value="" disabled>
+            Select Gender
+          </MenuItem>
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+        </TextField>
         <TextField
           label="Contact"
           name="contact"

@@ -31,7 +31,6 @@ const useUpdateHospital = () => {
   ) => {
     try {
       const response = await mutation.mutateAsync(hospitalData);
-
       // Handle success
       setMessageData({
         message: response.message ?? "Hospital updated successfully!",
@@ -39,7 +38,6 @@ const useUpdateHospital = () => {
         open: true,
       });
     } catch (error: any) {
-      console.log(error);
       // Handle error
       setMessageData({
         message:
