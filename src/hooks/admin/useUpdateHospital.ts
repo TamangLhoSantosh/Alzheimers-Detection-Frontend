@@ -9,27 +9,50 @@ const useUpdateHospital = () => {
       throw new Error("Token not found");
     }
 
-    try {
-      const response = await apiClient.put(
-        `/hospital/${hospitalData.id.toString()}`,
-        hospitalData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data; // You can return the response if needed
-    } catch (error: any) {
-      // Optionally handle specific error cases or log
-      throw new Error(
-        error?.response?.data?.message || "Error updating hospital"
-      );
-    }
+    const response = await apiClient.put(
+      `/hospital/${hospitalData.id.toString()}`,
+      hospitalData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
   });
 
+  const updateHospital = async (
+    hospitalData: HospitalData,
+    setMessageData: (data: {
+      message: string;
+      title: string;
+      open: boolean;
+    }) => void
+  ) => {
+    try {
+      const response = await mutation.mutateAsync(hospitalData);
+
+      // Handle success
+      setMessageData({
+        message: response.message ?? "Hospital updated successfully!",
+        title: "Success",
+        open: true,
+      });
+    } catch (error: any) {
+      console.log(error);
+      // Handle error
+      setMessageData({
+        message:
+          (error.response?.data as { detail?: string })?.detail ||
+          error.message,
+        title: "Error",
+        open: true,
+      });
+    }
+  };
+
   return {
-    updateHospital: mutation.mutateAsync,
+    updateHospital,
     isLoading: mutation.isLoading,
     error: mutation.error,
   };

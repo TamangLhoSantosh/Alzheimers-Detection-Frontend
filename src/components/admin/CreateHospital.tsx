@@ -53,7 +53,7 @@ const CreateHospital: React.FC<CreateHospitalProps> = ({
     e.preventDefault();
     if (hospitalData) {
       // Update hospital
-      updateHospital({ ...hospitalData, ...formData });
+      updateHospital({ ...hospitalData, ...formData }, setMessageData);
     } else {
       // Create hospital
       createHospital(formData as CreateHospitalData, setMessageData);
