@@ -8,7 +8,6 @@ const useUpdateUser = () => {
     if (!token) {
       throw new Error("Token not found");
     }
-
     const response = await apiClient.put(
       `/user/${userData.id.toString()}`,
       userData,
