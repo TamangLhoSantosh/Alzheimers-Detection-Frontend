@@ -23,11 +23,7 @@ const useUpdateHospital = () => {
 
   const updateHospital = async (
     hospitalData: HospitalData,
-    setMessageData: (data: {
-      message: string;
-      title: string;
-      open: boolean;
-    }) => void
+    setMessageData: Function
   ) => {
     try {
       const response = await mutation.mutateAsync(hospitalData);

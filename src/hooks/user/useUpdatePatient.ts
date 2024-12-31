@@ -26,7 +26,6 @@ const useUpdatePatient = () => {
   ) => {
     try {
       const response = await mutation.mutateAsync(patientData);
-
       // Handle success
       setMessageData({
         message: response.message ?? "Patient detail updated successfully!",
