@@ -29,7 +29,7 @@ const useUpdatePatient = () => {
 
       // Handle success
       setMessageData({
-        message: response.message ?? "User updated successfully!",
+        message: response.message ?? "Patient detail updated successfully!",
         title: "Success",
         open: true,
       });

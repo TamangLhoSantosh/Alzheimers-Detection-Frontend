@@ -66,12 +66,9 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      if (patientData) updatePatient({ ...patientData, ...formData });
-      else createPatient(formData, setMessageData);
-    } catch (err) {
-      console.error("Error creating/updating patient:", err);
-    }
+    if (patientData)
+      updatePatient({ ...patientData, ...formData }, setMessageData);
+    else createPatient(formData, setMessageData);
   };
 
   // Populate form data if editing an existing patient
