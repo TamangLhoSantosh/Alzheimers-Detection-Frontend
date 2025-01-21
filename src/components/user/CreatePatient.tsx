@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import useCreatePatient, {
   CreatePatientData,
 } from "../../hooks/user/useCreatePatient";
 import { PatientData } from "../../hooks/user/useGetPatients";
 import useUpdatePatient from "../../hooks/user/useUpdatePatient";
+import { useAuth } from "../generic/authContext";
+import MessageComponent from "../generic/MessageComponent";
 
 // Props Interface
 interface CreatePatientProps {
@@ -13,8 +15,8 @@ interface CreatePatientProps {
 }
 
 const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
-  // Retrieve hospital_id from localStorage
-  const hospitalId = localStorage.getItem("hospital_id") || "";
+  const { user } = useAuth();
+  const hospitalId = user?.hospital_id || "";
 
   // State for form data
   const [formData, setFormData] = useState<CreatePatientData>({
@@ -29,7 +31,7 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
   });
 
   // Extract functions and state from useCreatePatient hook
-  const { createPatient, error, isLoading } = useCreatePatient();
+  const { createPatient, isLoading } = useCreatePatient();
 
   // Extract functionsand state from useUpdatePatient hook
   const { updatePatient } = useUpdatePatient();
@@ -43,16 +45,30 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
     }));
   };
 
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
+
+  // Function to close message
+  const closeMessage = () => {
+    if (messageData.title === "Success") {
+      onClose();
+    }
+    setMessageData({ open: false, title: "", message: "" });
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      if (patientData) updatePatient({ ...patientData, ...formData });
-      else createPatient(formData);
-      onClose(); // Close the form modal on success
-    } catch (err) {
-      console.error("Error creating/updating patient:", err);
-    }
+    if (patientData)
+      updatePatient({ ...patientData, ...formData }, setMessageData);
+    else createPatient(formData, setMessageData);
   };
 
   // Populate form data if editing an existing patient
@@ -140,11 +156,24 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
         <TextField
           label="Gender"
           name="gender"
+          select
+          fullWidth
           value={formData.gender}
           onChange={handleChange}
-          fullWidth
           required
-        />
+          variant="outlined"
+          sx={{
+            backgroundColor: "#f8f8f8",
+            borderRadius: "8px",
+          }}
+        >
+          <MenuItem value="" disabled>
+            Select Gender
+          </MenuItem>
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+        </TextField>
         <TextField
           label="Contact"
           name="contact"
@@ -184,14 +213,14 @@ const CreatePatient = ({ onClose, patientData }: CreatePatientProps) => {
             Cancel
           </Button>
         </Box>
-
-        {/* Display error if any */}
-        {error && (
-          <Typography color="error" variant="body2" textAlign="center">
-            {error || "An error occurred."}
-          </Typography>
-        )}
       </Box>
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={closeMessage}
+        />
+      )}
     </Box>
   );
 };

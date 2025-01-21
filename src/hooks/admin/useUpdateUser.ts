@@ -8,26 +8,42 @@ const useUpdateUser = () => {
     if (!token) {
       throw new Error("Token not found");
     }
-
-    try {
-      const response = await apiClient.put(
-        `/user/${userData.id.toString()}`,
-        userData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data; // You can return the response if needed
-    } catch (error: any) {
-      // Optionally handle specific error cases or log
-      throw new Error(error?.response?.data?.message || "Error updating user");
-    }
+    const response = await apiClient.put(
+      `/user/${userData.id.toString()}`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
   });
 
+  const updateUser = async (userData: UserData, setMessageData: Function) => {
+    try {
+      const response = await mutation.mutateAsync(userData);
+
+      // Handle success
+      setMessageData({
+        message: response.message ?? "User updated successfully!",
+        title: "Success",
+        open: true,
+      });
+    } catch (error: any) {
+      // Handle error
+      setMessageData({
+        message:
+          (error.response?.data as { detail?: string })?.detail ||
+          error.message,
+        title: "Error",
+        open: true,
+      });
+    }
+  };
+
   return {
-    updateUser: mutation.mutateAsync,
+    updateUser,
     isLoading: mutation.isLoading,
     error: mutation.error,
   };

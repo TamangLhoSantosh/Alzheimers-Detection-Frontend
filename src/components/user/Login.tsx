@@ -7,10 +7,13 @@ import {
   IconButton,
   InputAdornment,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import MessageComponent from "../generic/MessageComponent";
 import useLogin, { LoginaData } from "../../hooks/user/useLogin";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [values, setValues] = useState<LoginaData>({
@@ -18,6 +21,7 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { login, isLoading, error } = useLogin();
 
   // State to handle messages
@@ -40,6 +44,11 @@ const Login = () => {
   // Toggle password visibility
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // Handle checkbox change
+  const handleRememberMeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setRememberMe(e.target.checked);
+  };
+
   // Close message component
   const closeMessage = () =>
     setMessageData({ open: false, title: "", message: "" });
@@ -60,8 +69,7 @@ const Login = () => {
       return;
     }
 
-    // Pass setMessageData function to login function to show success or error
-    await login(values, setMessageData);
+    await login(values, setMessageData, rememberMe);
   };
 
   useEffect(() => {
@@ -175,21 +183,54 @@ const Login = () => {
             }}
           />
 
-          {/* Login Button */}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            sx={{
-              bgcolor: "#7241ff",
-              "&:hover": {
-                bgcolor: "#03B0FD",
-              },
-            }}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            Login
-          </Button>
+            {/* Remember Me Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                />
+              }
+              label="Remember Me"
+            />
+
+            {/* Forgot Password Link */}
+            <Link to="/forgot-password" style={{ textDecoration: "none" }}>
+              <Typography
+                sx={{
+                  color: "#7241ff",
+                  "&:hover": {
+                    color: "#03B0FD",
+                  },
+                }}
+              >
+                Forgot Password?
+              </Typography>
+            </Link>
+          </Box>
+
+          {/* Login Button */}
+          <Box display="flex" justifyContent="center">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              sx={{
+                bgcolor: "#7241ff",
+                "&:hover": {
+                  bgcolor: "#03B0FD",
+                },
+              }}
+            >
+              Login
+            </Button>
+          </Box>
         </Box>
       </Box>
 

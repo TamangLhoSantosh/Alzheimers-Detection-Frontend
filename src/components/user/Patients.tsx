@@ -11,6 +11,7 @@ import useGetPatient, { PatientData } from "../../hooks/user/useGetPatients";
 import MessageComponent from "../generic/MessageComponent";
 import CreatePatient from "./CreatePatient";
 import { useAuth } from "../generic/authContext";
+import { capitalizeWord } from "../../services/helpers";
 
 const Patient = () => {
   const { user } = useAuth();
@@ -115,7 +116,7 @@ const Patient = () => {
                 Contact: {patient.contact || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#03B0FD" }}>
-                Gender: {patient.gender || "N/A"}
+                Gender: {capitalizeWord(patient.gender) || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
                 Address: {patient.address}

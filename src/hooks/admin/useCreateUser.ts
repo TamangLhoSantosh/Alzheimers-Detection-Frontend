@@ -21,29 +21,47 @@ export interface CreateUserAccount {
 interface CreateUserResult {
   isLoading: boolean;
   error: string | null;
-  createUser: (userData: CreateUserAccount) => void;
+  createUser: (userData: CreateUserAccount, setMessage: Function) => void;
 }
 
 const useCreateUser = (): CreateUserResult => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = usePostData<void>("/user");
 
-  const createUser = (userData: CreateUserAccount) => {
+  const { mutate, isLoading, error } =
+    usePostData<Record<string, any>>("/user");
+
+  const createUser = (
+    userData: CreateUserAccount,
+    setMessageData: Function
+  ) => {
     mutate(userData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["users"],
           exact: false,
         });
+        // Trigger success message
+        setMessageData({
+          message: response.message ?? "User creation successful!",
+          title: "Success",
+          open: true,
+        });
       },
       onError: (err) => {
         if (err instanceof AxiosError) {
-          console.error(
-            "Error creating user:",
-            err.response?.data || err.message
-          );
+          setMessageData({
+            message:
+              (err.response?.data as { detail?: string })?.detail ||
+              err.message,
+            title: "Error",
+            open: true,
+          });
         } else {
-          console.error("Unexpected error:", err);
+          setMessageData({
+            message: "An error occurred",
+            title: "Error",
+            open: true,
+          });
         }
       },
     });

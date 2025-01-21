@@ -12,29 +12,50 @@ export interface CreateHospitalData {
 interface CreateHospitalResult {
   isLoading: boolean;
   error: string | null;
-  createHospital: (hospitalData: CreateHospitalData) => void;
+  createHospital: (
+    hospitalData: CreateHospitalData,
+    setMessageData: Function
+  ) => void;
 }
 
 const useCreateHospital = (): CreateHospitalResult => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = usePostData<void>("/hospital");
 
-  const createHospital = (hospitalData: CreateHospitalData) => {
+  const { mutate, isLoading, error } =
+    usePostData<Record<string, any>>("/hospital");
+
+  const createHospital = (
+    hospitalData: CreateHospitalData,
+    setMessageData: Function
+  ) => {
     mutate(hospitalData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["hospitals"],
           exact: false,
         });
+        // Trigger success message
+        setMessageData({
+          message: response.message ?? "Hospital creation successful!",
+          title: "Success",
+          open: true,
+        });
       },
       onError: (err) => {
         if (err instanceof AxiosError) {
-          console.error(
-            "Error creating hospital:",
-            err.response?.data || err.message
-          );
+          setMessageData({
+            message:
+              (err.response?.data as { detail?: string })?.detail ||
+              err.message,
+            title: "Error",
+            open: true,
+          });
         } else {
-          console.error("Unexpected error:", err);
+          setMessageData({
+            message: "An error occurred",
+            title: "Error",
+            open: true,
+          });
         }
       },
     });

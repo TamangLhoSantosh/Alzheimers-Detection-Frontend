@@ -11,6 +11,7 @@ import { useState } from "react";
 import useGetUser, { UserData } from "../../hooks/admin/useGetUser";
 import MessageComponent from "../generic/MessageComponent";
 import CreateAccount from "./CreateAccount";
+import { capitalizeWord } from "../../services/helpers";
 
 const User = () => {
   // State for managing the message component display
@@ -115,7 +116,7 @@ const User = () => {
                 Email: {user.email}
               </Typography>
               <Typography variant="body1" sx={{ color: "#7241FF" }}>
-                Gender: {user.gender || "N/A"}
+                Gender: {capitalizeWord(user.gender) || "N/A"}
               </Typography>
               <Typography variant="body1" sx={{ color: "#03B0FD" }}>
                 Address: {user.address}

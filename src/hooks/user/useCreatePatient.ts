@@ -17,32 +17,51 @@ export interface CreatePatientData {
 interface CreatePatientResponse {
   isLoading: boolean;
   error: string | null;
-  createPatient: (patientData: CreatePatientData) => void;
+  createPatient: (
+    patientData: CreatePatientData,
+    setMessageData: Function
+  ) => void;
 }
 
 const useCreatePatient = (): CreatePatientResponse => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { mutate, isLoading, error } = usePostData<void>(
+  const { mutate, isLoading, error } = usePostData<Record<string, any>>(
     `/hospital/${user?.hospital_id}/patient`
   );
 
-  const createPatient = (patientData: CreatePatientData) => {
+  const createPatient = (
+    patientData: CreatePatientData,
+    setMessageData: Function
+  ) => {
     mutate(patientData, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries({
           queryKey: ["patients"],
           exact: false,
         });
+        // Trigger success message
+        setMessageData({
+          message: response.message ?? "Patient creation successful!",
+          title: "Success",
+          open: true,
+        });
       },
       onError: (err) => {
         if (err instanceof AxiosError) {
-          console.error(
-            "Error creating patients:",
-            err.response?.data || err.message
-          );
+          setMessageData({
+            message:
+              (err.response?.data as { detail?: string })?.detail ||
+              err.message,
+            title: "Error",
+            open: true,
+          });
         } else {
-          console.error("Unexpected error:", err);
+          setMessageData({
+            message: "An error occurred",
+            title: "Error",
+            open: true,
+          });
         }
       },
     });

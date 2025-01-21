@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import useCreateTest, { CreateTestData } from "../../hooks/user/useCreateTest";
 import { useParams } from "react-router-dom";
+import MessageComponent from "../generic/MessageComponent";
 
 // Props Interface
 interface CreateTestProps {
@@ -19,12 +20,28 @@ const CreateTest = ({ onClose }: CreateTestProps) => {
 
   // Custom hook for creating a test
   const { createTest } = useCreateTest(patientId);
+  const [messageData, setMessageData] = useState<{
+    message: string;
+    title: string;
+    open: boolean;
+  }>({
+    message: "",
+    title: "",
+    open: false,
+  });
+
+  // Function to close message
+  const closeMessage = () => {
+    if (messageData.title === "Success") {
+      onClose();
+    }
+    setMessageData({ open: false, title: "", message: "" });
+  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    createTest(testData);
-    onClose();
+    createTest(testData, setMessageData);
   };
 
   return (
@@ -94,6 +111,13 @@ const CreateTest = ({ onClose }: CreateTestProps) => {
           </Button>
         </Box>
       </Box>
+      {messageData.open && (
+        <MessageComponent
+          message={messageData.message}
+          title={messageData.title}
+          onClose={closeMessage}
+        />
+      )}
     </Box>
   );
 };
